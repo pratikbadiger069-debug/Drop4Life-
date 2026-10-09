@@ -77,13 +77,43 @@ export const DONOR_NAV_ITEMS = [
   { title: "Settings", href: "/donor/settings", icon: "Settings", disabled: true },
 ];
 
+export const STOCK_STATUS_CONFIG: Record<
+  string,
+  { label: string; description: string; color: string; badgeVariant: "destructive" | "warning" | "success" | "secondary" }
+> = {
+  CRITICAL_LOW: {
+    label: "Critical Shortage",
+    description: "Available inventory is below 50% of threshold or empty. Immediate donor requisitions required.",
+    color: "text-red-700 bg-red-50 border-red-300",
+    badgeVariant: "destructive",
+  },
+  LOW_STOCK: {
+    label: "Low Stock",
+    description: "Available stock is below safety threshold. Consider issuing donor callouts.",
+    color: "text-amber-700 bg-amber-50 border-amber-300",
+    badgeVariant: "warning",
+  },
+  ADEQUATE: {
+    label: "Adequate Reserve",
+    description: "Blood bank inventory satisfies standard operational buffers.",
+    color: "text-emerald-700 bg-emerald-50 border-emerald-300",
+    badgeVariant: "success",
+  },
+  SURPLUS: {
+    label: "High Reserve",
+    description: "Inventory is well above minimum safety thresholds.",
+    color: "text-blue-700 bg-blue-50 border-blue-300",
+    badgeVariant: "secondary",
+  },
+};
+
 export const HOSPITAL_NAV_ITEMS = [
-  { title: "Live Radar", href: "/hospital/dashboard", icon: "Activity", disabled: true },
+  { title: "Command Radar", href: "/hospital/dashboard", icon: "Activity", disabled: false },
+  { title: "Blood Inventory", href: "/hospital/inventory", icon: "Layers", disabled: false },
+  { title: "Hospital Profile", href: "/hospital/profile", icon: "Building2", disabled: false },
   { title: "Blood Requests", href: "/hospital/requests", icon: "Send", disabled: true },
-  { title: "Blood Inventory", href: "/hospital/inventory", icon: "Layers", disabled: true },
   { title: "Donor Matching", href: "/hospital/donors", icon: "Users", disabled: true },
   { title: "Analytics & Reports", href: "/hospital/reports", icon: "BarChart3", disabled: true },
-  { title: "Hospital Profile", href: "/hospital/profile", icon: "Building2", disabled: true },
   { title: "Settings", href: "/hospital/settings", icon: "Settings", disabled: true },
 ];
 

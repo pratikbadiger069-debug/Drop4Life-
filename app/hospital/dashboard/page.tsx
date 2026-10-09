@@ -1,25 +1,87 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { ProtectedRoute } from "@/components/auth/protected-route";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { useAuth } from "@/lib/auth/auth-context";
-import { HOSPITAL_NAV_ITEMS } from "@/lib/constants";
+import { HOSPITAL_NAV_ITEMS, APP_CONFIG } from "@/lib/constants";
+import { HospitalProfile, BloodInventoryItem, InventoryAuditLog } from "@/lib/types";
+import { hospitalService } from "@/lib/hospital/hospital-service";
+import { InventorySummaryCards } from "@/components/hospital/inventory-summary-cards";
+import { InventoryTable } from "@/components/hospital/inventory-table";
+import { InventoryAdjustmentDialog } from "@/components/hospital/inventory-adjustment-dialog";
+import { InventoryAuditLogView } from "@/components/hospital/inventory-audit-log-view";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Activity, Layers, Users, Clock, ShieldAlert } from "lucide-react";
-import Link from "next/link";
+import {
+  Activity,
+  Layers,
+  ShieldAlert,
+  Building2,
+  PhoneCall,
+  Clock,
+  Send,
+  AlertTriangle,
+  PlusCircle,
+  ShieldCheck,
+  CheckCircle2,
+} from "lucide-react";
 
 export default function HospitalDashboardPage() {
   const { user } = useAuth();
+  const [profile, setProfile] = useState<HospitalProfile | null>(null);
+  const [inventory, setInventory] = useState<BloodInventoryItem[]>([]);
+  const [auditLogs, setAuditLogs] = useState<InventoryAuditLog[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [selectedItemForEdit, setSelectedItemForEdit] = useState<BloodInventoryItem | null>(null);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    const currentUserId = user.id;
+    let isMounted = true;
+
+    async function loadData() {
+      try {
+        const [prof, inv, logs] = await Promise.all([
+          hospitalService.getHospitalProfile(currentUserId),
+          hospitalService.getBloodInventory(currentUserId),
+          hospitalService.getInventoryAuditLogs(currentUserId),
+        ]);
+        if (isMounted) {
+          setProfile(prof);
+          setInventory(inv);
+          setAuditLogs(logs);
+        }
+      } catch (err) {
+        console.error("Failed to load hospital data", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    }
+
+    loadData();
+    return () => {
+      isMounted = false;
+    };
+  }, [user]);
+
+  const handleAdjustmentSuccess = (updatedItem: BloodInventoryItem, newAuditLog: InventoryAuditLog) => {
+    setInventory((prev) =>
+      prev.map((i) => (i.bloodGroup === updatedItem.bloodGroup ? updatedItem : i))
+    );
+    setAuditLogs((prev) => [newAuditLog, ...prev]);
+  };
+
+  const criticalShortages = inventory.filter((item) => item.stockStatus === "CRITICAL_LOW");
 
   return (
     <ProtectedRoute allowedRoles={["hospital", "admin"]}>
       <DashboardShell
         role="hospital"
-        userName={user?.fullName || "Hospital Staff"}
-        userEmail={user?.email || "hospital@drop4life.org"}
+        userName={profile?.contactPerson || user?.fullName || "Hospital Staff"}
+        userEmail={profile?.workEmail || user?.email || "hospital@drop4life.org"}
         navItems={HOSPITAL_NAV_ITEMS}
       >
         <div className="space-y-6">
@@ -27,87 +89,101 @@ export default function HospitalDashboardPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
             <div>
               <div className="flex items-center gap-2">
-                <Badge variant="destructive">Hospital Portal (Phase 3 Active)</Badge>
+                <Badge variant="destructive">Hospital Portal (Phase 6 Active)</Badge>
                 <span className="text-xs text-muted-foreground font-mono">
-                  {user?.organizationName || "St. Jude Medical Center"}
+                  {profile?.licenseNumber || "NY-MED-884210-A"}
                 </span>
+                {profile?.isVerified && (
+                  <Badge variant="success" className="text-[10px] gap-1 font-bold">
+                    <ShieldCheck className="w-3 h-3" />
+                    Verified Facility
+                  </Badge>
+                )}
               </div>
-              <h1 className="text-2xl font-extrabold text-slate-900 mt-1">
-                Hospital Blood Command Radar
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
+                {profile?.hospitalName || "St. Jude Medical Center"} — Command Radar
               </h1>
-              <p className="text-xs text-slate-600">
-                Authorized clinical requisition engine, 8-group stock tracking, and smart donor matching.
+              <p className="text-xs sm:text-sm text-slate-600">
+                Department: <strong>{profile?.department || "Transfusion Medicine Blood Bank"}</strong> • City: <strong>{profile?.city || "New York"}</strong>
               </p>
             </div>
 
             <div className="flex items-center gap-2">
+              <Link href="/hospital/inventory">
+                <Button size="sm" variant="outline" className="font-semibold text-xs gap-1.5">
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Full Inventory</span>
+                </Button>
+              </Link>
               <Link href="/find-blood">
-                <Button size="sm" variant="outline">
-                  View Public Radar
+                <Button size="sm" variant="default" className="font-bold text-xs">
+                  Public Radar
                 </Button>
               </Link>
             </div>
           </div>
 
-          {/* Quick Metrics */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Card className="border-slate-200 bg-white shadow-xs">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-red-100 text-primary flex items-center justify-center font-bold">
-                  <Activity className="w-5 h-5" />
-                </div>
+          {/* Critical Shortage Warning Banner (If Any Critical Stocks Exist) */}
+          {criticalShortages.length > 0 && (
+            <div className="rounded-xl border border-red-300 bg-red-50 p-4 text-red-950 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Verification Status</p>
-                  <p className="text-base font-bold text-emerald-600 capitalize">
-                    {user?.verificationStatus || "Verified"}
+                  <h3 className="text-xs sm:text-sm font-bold text-red-950">
+                    Critical Blood Inventory Shortage Detected
+                  </h3>
+                  <p className="text-xs text-red-800">
+                    The following blood groups have fallen below safety minimums:{" "}
+                    <strong>{criticalShortages.map((g) => `Type ${g.bloodGroup} (${g.availableUnits} units available)`).join(", ")}</strong>.
                   </p>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
 
-            <Card className="border-slate-200 bg-white shadow-xs">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-slate-100 text-slate-800 flex items-center justify-center font-bold">
-                  <Layers className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Inventory Register</p>
-                  <p className="text-base font-bold text-slate-900">8 ABO/Rh Groups</p>
-                </div>
-              </CardContent>
-            </Card>
+              <Link href="/find-blood" className="self-start sm:self-center">
+                <Button size="sm" variant="destructive" className="font-bold text-xs">
+                  Review Emergency Demands
+                </Button>
+              </Link>
+            </div>
+          )}
 
-            <Card className="border-slate-200 bg-white shadow-xs">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-red-50 text-red-800 flex items-center justify-center font-bold">
-                  <ShieldAlert className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground">Emergency Dispatch</p>
-                  <p className="text-base font-bold text-slate-900">Active & Ready</p>
-                </div>
-              </CardContent>
-            </Card>
+          {/* KPI Cards */}
+          <InventorySummaryCards inventory={inventory} />
+
+          {/* 8-Group Inventory Table Register */}
+          <InventoryTable
+            inventory={inventory}
+            onSelectForEdit={(item) => setSelectedItemForEdit(item)}
+          />
+
+          {/* Audit Logs Trail */}
+          <InventoryAuditLogView logs={auditLogs} />
+
+          {/* Quarantine & Expiry Clinical Integrity Notice */}
+          <div className="rounded-xl border border-slate-200 bg-white p-4 text-xs text-slate-600 flex items-start gap-3">
+            <ShieldCheck className="w-5 h-5 text-slate-500 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <strong className="block text-slate-900 font-bold">
+                Clinical Storage & Regulatory Isolation Protocol:
+              </strong>
+              <p>
+                Under clinical blood banking guidelines, units undergoing viral serology or infectious screening are stored in separate temperature-monitored quarantine compartments. Units marked as quarantined or expired are mathematically excluded from usable transfusion tallies.
+              </p>
+            </div>
           </div>
-
-          {/* Roadmap Info Card */}
-          <Card className="border-dashed border-slate-300 bg-white">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-base">Hospital Workspace Foundation Initialized</CardTitle>
-              <CardDescription className="text-xs">
-                Authentication, session security, and role-based routing are verified for Phase 3. Full emergency request builder and 8-group stock register will expand in <strong>Phase 7</strong>.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-xs text-slate-600 space-y-2">
-              <p>
-                • <strong>Organization:</strong> {user?.organizationName || "Healthcare Provider"}
-              </p>
-              <p>
-                • <strong>Role Guard:</strong> Isolated from Donor and NGO accounts.
-              </p>
-            </CardContent>
-          </Card>
         </div>
+
+        {/* Modal: Adjust Inventory */}
+        {profile && (
+          <InventoryAdjustmentDialog
+            isOpen={Boolean(selectedItemForEdit)}
+            onClose={() => setSelectedItemForEdit(null)}
+            hospitalId={profile.userId}
+            item={selectedItemForEdit}
+            staffName={profile.contactPerson || user?.fullName || "Staff Member"}
+            onSuccess={handleAdjustmentSuccess}
+          />
+        )}
       </DashboardShell>
     </ProtectedRoute>
   );

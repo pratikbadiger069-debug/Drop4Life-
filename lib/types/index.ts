@@ -87,12 +87,24 @@ export interface DonationRecord {
   createdAt: string;
 }
 
+export type StockStatus = "CRITICAL_LOW" | "LOW_STOCK" | "ADEQUATE" | "SURPLUS";
+
+export type InventoryAdjustmentReason =
+  | "ROUTINE_AUDIT"
+  | "DONATION_RECEIVED"
+  | "TRANSFUSION_DISPATCH"
+  | "RESERVED_FOR_SURGERY"
+  | "EXPIRED_DISPOSAL"
+  | "QUARANTINE_ADJUSTMENT";
+
 export interface HospitalProfile {
   id: string;
   userId: string;
   hospitalName: string;
   licenseNumber: string;
   department: string;
+  contactPerson: string;
+  workEmail: string;
   phone: string;
   emergencyPhone: string;
   address: string;
@@ -100,6 +112,10 @@ export interface HospitalProfile {
   latitude?: number;
   longitude?: number;
   isVerified: boolean;
+  verificationStatus?: "verified" | "pending" | "rejected";
+  totalBeds?: number;
+  bloodBankLicense?: string;
+  updatedAt?: string;
 }
 
 export interface NGOProfile {
@@ -114,10 +130,38 @@ export interface NGOProfile {
 }
 
 export interface BloodInventoryItem {
+  hospitalId: string;
   bloodGroup: BloodGroup;
-  unitsAvailable: number;
+  availableUnits: number;
+  reservedUnits: number;
+  quarantinedUnits: number;
+  expiredUnits: number;
   lowStockThreshold: number;
+  stockStatus: StockStatus;
   lastUpdatedAt: string;
+  lastUpdatedByStaffId?: string;
+  lastUpdatedByStaffName?: string;
+  // legacy compatibility alias
+  unitsAvailable?: number;
+}
+
+export interface InventoryAuditLog {
+  id: string;
+  hospitalId: string;
+  bloodGroup: BloodGroup;
+  reason: InventoryAdjustmentReason;
+  previousAvailable: number;
+  newAvailable: number;
+  previousReserved: number;
+  newReserved: number;
+  previousQuarantined: number;
+  newQuarantined: number;
+  previousExpired: number;
+  newExpired: number;
+  staffId: string;
+  staffName: string;
+  notes?: string;
+  timestamp: string;
 }
 
 export interface NavItem {
