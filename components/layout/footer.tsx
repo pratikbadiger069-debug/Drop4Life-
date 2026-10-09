@@ -37,18 +37,34 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/design-system" className="hover:text-white transition-colors">
-                  Design System Preview
+                <Link href="/how-it-works" className="hover:text-white transition-colors">
+                  How It Works
                 </Link>
               </li>
               <li>
-                <span className="text-slate-500 cursor-not-allowed">Find Blood (Phase 2)</span>
+                <Link href="/find-blood" className="hover:text-white transition-colors">
+                  Find Blood
+                </Link>
               </li>
               <li>
-                <span className="text-slate-500 cursor-not-allowed">Compatibility (Phase 4)</span>
+                <Link href="/campaigns" className="hover:text-white transition-colors">
+                  Campaigns
+                </Link>
               </li>
               <li>
-                <span className="text-slate-500 cursor-not-allowed">Emergency Requests (Phase 2)</span>
+                <Link href="/about" className="hover:text-white transition-colors">
+                  About Drop4Life
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-white transition-colors">
+                  Contact & Support
+                </Link>
+              </li>
+              <li>
+                <Link href="/design-system" className="hover:text-white transition-colors">
+                  Design System Preview
+                </Link>
               </li>
             </ul>
           </div>

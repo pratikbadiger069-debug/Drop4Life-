@@ -35,11 +35,11 @@ export const PRIORITY_CONFIG: Record<
 
 export const PUBLIC_NAV_ITEMS = [
   { title: "Home", href: "/" },
-  { title: "Find Blood", href: "/find-blood", disabled: true, note: "Phase 2" },
-  { title: "Compatibility", href: "/blood-compatibility", disabled: true, note: "Phase 4" },
-  { title: "Emergency", href: "/emergency", disabled: true, note: "Phase 2" },
-  { title: "Network", href: "/blood-network", disabled: true, note: "Phase 2" },
-  { title: "About", href: "/about", disabled: true, note: "Phase 2" },
+  { title: "How It Works", href: "/how-it-works" },
+  { title: "Find Blood", href: "/find-blood" },
+  { title: "Campaigns", href: "/campaigns" },
+  { title: "About", href: "/about" },
+  { title: "Contact", href: "/contact" },
   { title: "Design System", href: "/design-system" },
 ];
 

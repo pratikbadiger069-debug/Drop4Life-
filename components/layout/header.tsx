@@ -7,7 +7,7 @@ import { BrandLogo } from "@/components/branding/brand-logo";
 import { PUBLIC_NAV_ITEMS, APP_CONFIG } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, PhoneCall, ShieldAlert, Sparkles } from "lucide-react";
+import { Menu, X, PhoneCall, ShieldAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -59,23 +59,6 @@ export function Header() {
           <nav className="hidden lg:flex items-center space-x-1" aria-label="Main Navigation">
             {PUBLIC_NAV_ITEMS.map((item) => {
               const isActive = pathname === item.href;
-              if (item.disabled) {
-                return (
-                  <span
-                    key={item.href}
-                    className="inline-flex items-center px-3 py-2 text-sm font-medium text-slate-400 cursor-not-allowed select-none rounded-md"
-                    title={`Coming in ${item.note || "upcoming phase"}`}
-                  >
-                    {item.title}
-                    {item.note && (
-                      <span className="ml-1 text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">
-                        {item.note}
-                      </span>
-                    )}
-                  </span>
-                );
-              }
-
               return (
                 <Link
                   key={item.href}
@@ -137,20 +120,6 @@ export function Header() {
           <div className="flex flex-col space-y-1">
             {PUBLIC_NAV_ITEMS.map((item) => {
               const isActive = pathname === item.href;
-              if (item.disabled) {
-                return (
-                  <div
-                    key={item.href}
-                    className="flex items-center justify-between px-3 py-2 text-sm font-medium text-slate-400 select-none"
-                  >
-                    <span>{item.title}</span>
-                    <span className="text-[10px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded">
-                      {item.note || "Soon"}
-                    </span>
-                  </div>
-                );
-              }
-
               return (
                 <Link
                   key={item.href}
