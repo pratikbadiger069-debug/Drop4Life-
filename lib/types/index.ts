@@ -34,17 +34,57 @@ export interface User {
   updatedAt: string;
 }
 
+export type DonorAvailabilityStatus =
+  | "AVAILABLE"
+  | "TEMPORARILY_UNAVAILABLE"
+  | "DO_NOT_CONTACT";
+
+export type PreferredContactMethod = "EMAIL" | "PHONE" | "SMS" | "WHATSAPP";
+
+export type DonationRecordStatus = "VERIFIED" | "PENDING_REVIEW" | "SELF_REPORTED";
+
+export type DonationType = "WHOLE_BLOOD" | "RED_CELLS" | "PLATELETS" | "PLASMA";
+
 export interface DonorProfile {
   id: string;
   userId: string;
   fullName: string;
+  email: string;
   bloodGroup: BloodGroup;
   phone: string;
+  phoneVerified?: boolean;
+  emailVerified?: boolean;
   city: string;
+  area?: string;
+  address?: string;
+  dateOfBirth?: string;
+  availabilityStatus: DonorAvailabilityStatus;
+  preferredLocation?: string;
+  preferredContactMethod: PreferredContactMethod;
+  availabilityNotes?: string;
+  isAvailable?: boolean; // legacy alias for availabilityStatus === 'AVAILABLE'
+  lastDonatedAt?: string;
+  profileCompletion: number;
   latitude?: number;
   longitude?: number;
-  isAvailable: boolean;
-  lastDonatedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface DonationRecord {
+  id: string;
+  donorId: string;
+  userId: string;
+  donationDate: string;
+  facilityName: string;
+  facilityCity: string;
+  bloodGroup: BloodGroup;
+  units: number;
+  donationType: DonationType;
+  recordStatus: DonationRecordStatus;
+  referenceNumber?: string;
+  notes?: string;
+  createdAt: string;
 }
 
 export interface HospitalProfile {

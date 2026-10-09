@@ -44,12 +44,36 @@ export const PUBLIC_NAV_ITEMS = [
   { title: "Design System", href: "/design-system" },
 ];
 
+export const DONOR_AVAILABILITY_CONFIG: Record<
+  string,
+  { label: string; description: string; color: string; badgeVariant: "success" | "warning" | "destructive" }
+> = {
+  AVAILABLE: {
+    label: "Available for contact",
+    description: "You are open to receiving urgent blood donation contact for matching blood groups.",
+    color: "text-emerald-700 bg-emerald-50 border-emerald-200",
+    badgeVariant: "success",
+  },
+  TEMPORARILY_UNAVAILABLE: {
+    label: "Temporarily unavailable",
+    description: "You are currently unable to donate (recent donation recovery, travel, busy schedule).",
+    color: "text-amber-700 bg-amber-50 border-amber-200",
+    badgeVariant: "warning",
+  },
+  DO_NOT_CONTACT: {
+    label: "Do not contact",
+    description: "You do not wish to receive notifications or donation contact at this time.",
+    color: "text-slate-700 bg-slate-100 border-slate-300",
+    badgeVariant: "destructive",
+  },
+};
+
 export const DONOR_NAV_ITEMS = [
-  { title: "Overview", href: "/donor/dashboard", icon: "LayoutDashboard", disabled: true },
+  { title: "Overview", href: "/donor/dashboard", icon: "LayoutDashboard", disabled: false },
+  { title: "My Profile", href: "/donor/profile", icon: "User", disabled: false },
+  { title: "Donation History", href: "/donor/donations", icon: "History", disabled: false },
   { title: "Blood Requests", href: "/donor/requests", icon: "Inbox", disabled: true },
-  { title: "Donation History", href: "/donor/donations", icon: "History", disabled: true },
   { title: "Notifications", href: "/donor/notifications", icon: "Bell", disabled: true },
-  { title: "My Profile", href: "/donor/profile", icon: "User", disabled: true },
   { title: "Settings", href: "/donor/settings", icon: "Settings", disabled: true },
 ];
 
