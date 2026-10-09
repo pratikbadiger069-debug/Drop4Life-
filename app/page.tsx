@@ -16,6 +16,7 @@ import {
   MOCK_PUBLIC_CAMPAIGNS,
   MOCK_TRUST_METRICS,
 } from "@/lib/mock-data";
+import { InteractiveBloodCompatibilityChecker } from "@/components/blood-compatibility/interactive-compatibility-checker";
 import {
   Heart,
   Activity,
@@ -33,6 +34,8 @@ import {
   Users,
   Compass,
   PhoneCall,
+  UserPlus,
+  HeartHandshake,
 } from "lucide-react";
 
 export default function HomePage() {
@@ -78,7 +81,7 @@ export default function HomePage() {
                       <span>Find Blood</span>
                     </Button>
                   </Link>
-                  <Link href="/find-blood" className="w-full sm:w-auto">
+                  <Link href="/request-blood" className="w-full sm:w-auto">
                     <Button variant="blush" size="lg" className="w-full font-semibold inline-flex items-center justify-center gap-2">
                       <Activity className="w-4 h-4 text-primary" />
                       <span>Request Blood</span>
@@ -239,66 +242,120 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* HOW IT WORKS (3 STEPS) */}
+        {/* HOW IT WORKS (4 STEPS) */}
         <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <Badge variant="blush" className="mb-2">Simple 3-Step Coordination</Badge>
-            <h2 className="text-3xl font-extrabold text-slate-900">
+            <Badge variant="blush" className="mb-2">4-Step Coordination Workflow</Badge>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
               How Drop4Life Works
             </h2>
             <p className="mt-3 text-base text-slate-600 leading-relaxed">
-              Replacing chaotic emergency messaging with a deterministic, privacy-first platform connecting verified stakeholders.
+              Replacing chaotic emergency messaging with a deterministic, privacy-first platform connecting verified donors, recipients, hospitals, and blood banks.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
             {/* Step 1 */}
-            <div className="relative rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-6">
-                <div className="h-12 w-12 rounded-xl bg-red-100 text-primary flex items-center justify-center font-black text-xl">
-                  1
+            <div className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="h-11 w-11 rounded-xl bg-red-100 text-primary flex items-center justify-center font-black text-lg">
+                    1
+                  </div>
+                  <Badge variant="outline" className="text-[11px]">Onboarding</Badge>
                 </div>
-                <Badge variant="outline">Onboarding</Badge>
+                <div className="flex items-center gap-2 mb-2">
+                  <UserPlus className="w-5 h-5 text-primary" />
+                  <h3 className="text-lg font-bold text-slate-900">1. Register</h3>
+                </div>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Join as a donor, recipient, NGO, or hospital. Set up your role profile with verified credentials and location preferences.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Connect</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                Donors, hospitals, and NGOs join Drop4Life with verified credentials, setting their regional availability and ABO/Rh profile.
-              </p>
+              <div className="mt-4 pt-3 border-t text-xs font-semibold text-primary">
+                Quick role-based onboarding
+              </div>
             </div>
 
             {/* Step 2 */}
-            <div className="relative rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-6">
-                <div className="h-12 w-12 rounded-xl bg-red-100 text-primary flex items-center justify-center font-black text-xl">
-                  2
+            <div className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="h-11 w-11 rounded-xl bg-red-100 text-primary flex items-center justify-center font-black text-lg">
+                    2
+                  </div>
+                  <Badge variant="outline" className="text-[11px]">Intake</Badge>
                 </div>
-                <Badge variant="outline">Matching</Badge>
+                <div className="flex items-center gap-2 mb-2">
+                  <Search className="w-5 h-5 text-primary" />
+                  <h3 className="text-lg font-bold text-slate-900">2. Search or Request</h3>
+                </div>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Find available blood stock in your city or submit an SOS emergency request with required units, urgency, and facility.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Find Support</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                Hospitals issue critical requests, and our smart engine ranks available, compatible donors while NGOs broadcast public drives.
-              </p>
+              <div className="mt-4 pt-3 border-t text-xs font-semibold text-primary">
+                Instant SOS requisition
+              </div>
             </div>
 
             {/* Step 3 */}
-            <div className="relative rounded-2xl border border-slate-200 bg-white p-8 shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-center justify-between mb-6">
-                <div className="h-12 w-12 rounded-xl bg-red-100 text-primary flex items-center justify-center font-black text-xl">
-                  3
+            <div className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="h-11 w-11 rounded-xl bg-red-100 text-primary flex items-center justify-center font-black text-lg">
+                    3
+                  </div>
+                  <Badge variant="outline" className="text-[11px]">Algorithm</Badge>
                 </div>
-                <Badge variant="outline">Fulfillment</Badge>
+                <div className="flex items-center gap-2 mb-2">
+                  <HeartHandshake className="w-5 h-5 text-primary" />
+                  <h3 className="text-lg font-bold text-slate-900">3. Find a Match</h3>
+                </div>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Identify compatible potential donors or authorized blood banks through clinical ABO/Rh compatibility algorithms.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Coordinate</h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
-                Authorized staff coordinate donation schedules, track real-time responses, and confirm completed transfusions safely.
-              </p>
+              <div className="mt-4 pt-3 border-t text-xs font-semibold text-primary">
+                Smart donor matching
+              </div>
+            </div>
+
+            {/* Step 4 */}
+            <div className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="h-11 w-11 rounded-xl bg-red-100 text-primary flex items-center justify-center font-black text-lg">
+                    4
+                  </div>
+                  <Badge variant="outline" className="text-[11px]">Fulfillment</Badge>
+                </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                  <h3 className="text-lg font-bold text-slate-900">4. Coordinate & Track</h3>
+                </div>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  Coordinate the donation safely, follow live request status via unique tracking IDs, and confirm transfusion completion.
+                </p>
+              </div>
+              <div className="mt-4 pt-3 border-t text-xs font-semibold text-emerald-600">
+                End-to-end timeline tracking
+              </div>
             </div>
           </div>
 
-          <div className="mt-10 text-center">
-            <Link href="/how-it-works">
-              <Button variant="outline" className="font-semibold gap-2">
-                <span>Read Comprehensive Role Journey</span>
+          {/* Action CTAs: Functional Get Started Button */}
+          <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/register" className="w-full sm:w-auto">
+              <Button size="lg" className="w-full font-bold shadow-lg shadow-red-900/10 gap-2">
+                <Sparkles className="w-4 h-4" />
+                <span>Get Started</span>
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+            <Link href="/how-it-works" className="w-full sm:w-auto">
+              <Button variant="outline" size="lg" className="w-full font-semibold gap-2 bg-white">
+                <span>Explore Role Walkthrough</span>
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
@@ -432,61 +489,9 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* BLOOD COMPATIBILITY & CLINICAL DISCLAIMER SECTION */}
+        {/* INTERACTIVE BLOOD COMPATIBILITY CHECKER */}
         <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl border border-red-100 bg-gradient-to-r from-red-50/60 to-white p-8 sm:p-12 shadow-sm">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-8 space-y-4">
-                <Badge variant="blush">ABO & Rh Blood System</Badge>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                  Why Blood Group Compatibility Matters
-                </h2>
-                <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                  During an emergency transfusion, administering incompatible red blood cells can trigger severe adverse hemolytic reactions. Drop4Life supports all 8 primary ABO/Rh blood groups (<strong>O-, O+, A-, A+, B-, B+, AB-, AB+</strong>) to accelerate accurate donor-patient matching.
-                </p>
-
-                {/* 8 Blood Groups Pill Row */}
-                <div className="pt-2 flex flex-wrap gap-2">
-                  {ALL_BLOOD_GROUPS.map((group) => (
-                    <span
-                      key={group}
-                      className="inline-flex items-center px-3 py-1 rounded-lg border border-red-200 bg-white font-black text-xs text-primary shadow-xs"
-                    >
-                      {group}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="pt-3">
-                  <Alert variant="info" className="bg-white border-blue-200">
-                    <AlertTitle className="text-xs font-bold text-blue-950">
-                      Medical & Clinical Disclaimer
-                    </AlertTitle>
-                    <AlertDescription className="text-xs text-blue-900">
-                      Blood compatibility information is for general informational purposes only. Qualified medical professionals must determine transfusion suitability and follow applicable clinical protocols.
-                    </AlertDescription>
-                  </Alert>
-                </div>
-              </div>
-
-              <div className="lg:col-span-4 flex flex-col items-center justify-center p-6 bg-white rounded-xl border border-slate-200 text-center">
-                <div className="h-14 w-14 rounded-full bg-red-100 text-primary flex items-center justify-center mb-3">
-                  <Droplet className="w-7 h-7 fill-current" />
-                </div>
-                <h4 className="font-bold text-slate-900 text-sm">Universal Donor: O-</h4>
-                <p className="text-xs text-slate-500 mt-1 max-w-xs">
-                  O-negative red blood cells can be safely received by all blood groups during acute emergency trauma before typing is completed.
-                </p>
-                <div className="mt-4">
-                  <Link href="/find-blood">
-                    <Button size="sm" variant="default" className="text-xs">
-                      Search Urgent Requests
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
+          <InteractiveBloodCompatibilityChecker />
         </section>
 
         {/* CAMPAIGNS PREVIEW SECTION */}

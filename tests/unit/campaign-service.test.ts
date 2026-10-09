@@ -13,7 +13,7 @@ describe("NGO Campaign Service", () => {
     expect(campaigns.length).toBeGreaterThan(0);
 
     const profile = await campaignService.getNgoProfile("usr-ngo-003");
-    expect(profile.organizationName).toBe("Red Cross LifeCare Auxiliary");
+    expect(profile.organizationName).toBe("Youth Red Cross Society & Lifeline");
     expect(profile.isVerified).toBe(true);
   });
 
@@ -23,15 +23,15 @@ describe("NGO Campaign Service", () => {
       description: "Partnering with campus health centers.",
       venueName: "Campus Recreation Center",
       address: "500 Main Street",
-      city: "New York",
-      area: "Downtown",
+      city: "Bengaluru",
+      area: "MG Road",
       startDate: "2026-11-15",
       endDate: "2026-11-16",
       startTime: "09:00 AM",
       endTime: "04:00 PM",
       targetUnits: 150,
       capacityLimit: 180,
-      contactPhone: "+1 (555) 456-7890",
+      contactPhone: "+91 98765 00003",
       contactEmail: "ngo@drop4life.org",
       status: "PUBLISHED",
     });
@@ -47,15 +47,15 @@ describe("NGO Campaign Service", () => {
       campaignService.createCampaign({
         title: "Invalid Date Campaign",
         description: "Test description",
-        venueName: "Central Park",
-        address: "Central Park West",
-        city: "New York",
+        venueName: "Cubbon Park",
+        address: "Kasturba Road",
+        city: "Bengaluru",
         startDate: "2026-11-20",
         endDate: "2026-11-10",
         startTime: "10:00 AM",
         endTime: "04:00 PM",
         targetUnits: 50,
-        contactPhone: "+1 (555) 456-7890",
+        contactPhone: "+91 98765 00003",
         contactEmail: "ngo@drop4life.org",
       })
     ).rejects.toThrow(/start date cannot be after end date/i);
@@ -65,15 +65,15 @@ describe("NGO Campaign Service", () => {
       campaignService.createCampaign({
         title: "Invalid Unit Campaign",
         description: "Test description",
-        venueName: "Central Park",
-        address: "Central Park West",
-        city: "New York",
+        venueName: "Cubbon Park",
+        address: "Kasturba Road",
+        city: "Bengaluru",
         startDate: "2026-11-10",
         endDate: "2026-11-12",
         startTime: "10:00 AM",
         endTime: "04:00 PM",
         targetUnits: 0,
-        contactPhone: "+1 (555) 456-7890",
+        contactPhone: "+91 98765 00003",
         contactEmail: "ngo@drop4life.org",
       })
     ).rejects.toThrow(/target units must be at least 1/i);
@@ -130,14 +130,14 @@ describe("NGO Campaign Service", () => {
       description: "Test capacity limit",
       venueName: "Clinic Room 1",
       address: "100 Medical Way",
-      city: "New York",
+      city: "Bengaluru",
       startDate: "2026-11-01",
       endDate: "2026-11-01",
       startTime: "09:00 AM",
       endTime: "11:00 AM",
       targetUnits: 1,
       capacityLimit: 1,
-      contactPhone: "+1 (555) 456-7890",
+      contactPhone: "+91 98765 00003",
       contactEmail: "ngo@drop4life.org",
     });
 

@@ -14,9 +14,9 @@ describe("Hospital Service & Blood Bank Inventory", () => {
         id: hospitalUserId,
         email: "hospital@drop4life.org",
         role: "hospital",
-        fullName: "Dr. David Brooks",
-        organizationName: "St. Jude Medical Center",
-        city: "New York",
+        fullName: "Dr. Rajesh Verma",
+        organizationName: "Apollo Hospital Jubilee Hills",
+        city: "Hyderabad",
         verificationStatus: "verified",
       },
       token: "tok_test_hospital",
@@ -54,7 +54,7 @@ describe("Hospital Service & Blood Bank Inventory", () => {
           id: donorUserId,
           email: "donor@drop4life.org",
           role: "donor",
-          fullName: "Alex Morgan",
+          fullName: "Rahul Kumar",
         },
         token: "tok_donor",
         expiresAt: new Date(Date.now() + 86400000).toISOString(),
@@ -88,18 +88,18 @@ describe("Hospital Service & Blood Bank Inventory", () => {
     it("retrieves the default hospital profile", async () => {
       const profile = await hospitalService.getHospitalProfile(hospitalUserId);
       expect(profile).toBeDefined();
-      expect(profile.hospitalName).toBe("St. Jude Medical Center");
-      expect(profile.contactPerson).toBe("Dr. David Brooks");
+      expect(profile.hospitalName).toBe("Apollo Hospital Jubilee Hills");
+      expect(profile.contactPerson).toBe("Dr. Rajesh Verma");
       expect(profile.isVerified).toBe(true);
     });
 
     it("updates hospital profile details", async () => {
       const updated = await hospitalService.updateHospitalProfile(hospitalUserId, {
-        hospitalName: "St. Jude Regional Trauma Center",
+        hospitalName: "Apollo Speciality Trauma Center",
         department: "Blood Banking and Cryobiology Division",
       });
 
-      expect(updated.hospitalName).toBe("St. Jude Regional Trauma Center");
+      expect(updated.hospitalName).toBe("Apollo Speciality Trauma Center");
       expect(updated.department).toBe("Blood Banking and Cryobiology Division");
     });
 
@@ -142,13 +142,13 @@ describe("Hospital Service & Blood Bank Inventory", () => {
       expect(updatedItem.availableUnits).toBe(15);
       expect(updatedItem.reservedUnits).toBe(4);
       expect(updatedItem.stockStatus).toBe("ADEQUATE");
-      expect(updatedItem.lastUpdatedByStaffName).toBe("Dr. David Brooks");
+      expect(updatedItem.lastUpdatedByStaffName).toBe("Dr. Rajesh Verma");
 
       expect(auditLog).toBeDefined();
       expect(auditLog.bloodGroup).toBe("O-");
       expect(auditLog.reason).toBe("DONATION_RECEIVED");
       expect(auditLog.newAvailable).toBe(15);
-      expect(auditLog.staffName).toBe("Dr. David Brooks");
+      expect(auditLog.staffName).toBe("Dr. Rajesh Verma");
 
       // Verify persistence in subsequent fetch
       const currentInv = await hospitalService.getBloodInventory(hospitalUserId);

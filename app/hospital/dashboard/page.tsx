@@ -101,10 +101,10 @@ export default function HospitalDashboardPage() {
                 )}
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
-                {profile?.hospitalName || "St. Jude Medical Center"} — Command Radar
+                {profile?.hospitalName || "Apollo Hospital Jubilee Hills"} — Command Radar
               </h1>
               <p className="text-xs sm:text-sm text-slate-600">
-                Department: <strong>{profile?.department || "Transfusion Medicine Blood Bank"}</strong> • City: <strong>{profile?.city || "New York"}</strong>
+                Department: <strong>{profile?.department || "Transfusion Medicine Blood Bank"}</strong> • City: <strong>{profile?.city || "Hyderabad"}</strong>
               </p>
             </div>
 

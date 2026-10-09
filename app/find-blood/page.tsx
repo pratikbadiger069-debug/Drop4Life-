@@ -143,7 +143,7 @@ export default function FindBloodPage() {
                     type="text"
                     value={locationSearch}
                     onChange={(e) => setLocationSearch(e.target.value)}
-                    placeholder="e.g. New York, Brooklyn..."
+                    placeholder="e.g. Hyderabad, Bengaluru, Mumbai..."
                     className="h-9 w-full rounded-md border border-input bg-background px-3 pr-8 py-1 text-sm shadow-xs placeholder:text-muted-foreground focus:ring-2 focus:ring-primary"
                   />
                   <Search className="w-4 h-4 text-slate-400 absolute right-2.5 top-2.5 pointer-events-none" />

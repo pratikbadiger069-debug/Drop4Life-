@@ -37,13 +37,13 @@ export const DEFAULT_NOTIFICATION_PREFERENCES: NotificationPreferences = {
  * Seeded initial notifications for demonstration and testing
  */
 export const DEFAULT_NOTIFICATIONS: AppNotification[] = [
-  // Donor Alex Morgan notifications
+  // Donor Rahul Kumar notifications
   {
     id: "notif-001",
     userId: "usr-donor-001",
     role: "donor",
     title: "Urgent O- Requisition Matched",
-    message: "St. Jude Medical Center has submitted an emergency request for O- red blood cells in Manhattan.",
+    message: "Apollo Hospital Jubilee Hills has submitted an emergency request for O- red blood cells in Hyderabad.",
     category: "DONOR_MATCH",
     priority: "HIGH",
     linkUrl: "/donor/requests",
@@ -60,7 +60,7 @@ export const DEFAULT_NOTIFICATIONS: AppNotification[] = [
     userId: "usr-donor-001",
     role: "donor",
     title: "Blood Drive Invitation",
-    message: "Regional LifeCare NGO announced the 'Citywide Spring Blood Drive 2026' near you in Midtown.",
+    message: "Youth Red Cross Society & Lifeline announced the 'Mega Blood Donation Drive 2026' near you in Bengaluru.",
     category: "CAMPAIGN",
     priority: "MEDIUM",
     linkUrl: "/campaigns",
@@ -85,7 +85,7 @@ export const DEFAULT_NOTIFICATIONS: AppNotification[] = [
     readAt: "2026-10-01T11:15:00.000Z",
   },
 
-  // Hospital Dr. David Brooks notifications
+  // Hospital Dr. Rajesh Verma notifications
   {
     id: "notif-101",
     userId: "usr-hosp-002",
@@ -118,13 +118,13 @@ export const DEFAULT_NOTIFICATIONS: AppNotification[] = [
     readAt: "2026-10-08T17:30:00.000Z",
   },
 
-  // NGO Elena Vance notifications
+  // NGO Priya Reddy notifications
   {
     id: "notif-201",
     userId: "usr-ngo-003",
     role: "ngo",
     title: "New Volunteer Registration",
-    message: "A new donor registered for the Citywide Spring Blood Drive 2026.",
+    message: "A new donor registered for the Mega Blood Donation Drive 2026.",
     category: "CAMPAIGN",
     priority: "LOW",
     linkUrl: "/ngo/participants",
@@ -139,7 +139,7 @@ export const DEFAULT_NOTIFICATIONS: AppNotification[] = [
     userId: "usr-ngo-003",
     role: "ngo",
     title: "Organization Verified",
-    message: "Red Cross LifeCare Auxiliary has been officially verified by the platform coordinator.",
+    message: "Youth Red Cross Society & Lifeline has been officially verified by the platform coordinator.",
     category: "SYSTEM",
     priority: "MEDIUM",
     linkUrl: "/ngo/profile",

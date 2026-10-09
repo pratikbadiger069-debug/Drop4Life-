@@ -1,26 +1,29 @@
 /**
- * Drop4Life — Blood Group Compatibility Utility
+ * Drop4Life — Blood Group & Component Compatibility Utility
  * 
- * Provides pure, deterministic functions for general red blood cell (RBC) transfusion compatibility.
+ * Provides deterministic functions for general Red Blood Cell (RBC) and Plasma transfusion compatibility.
  * 
  * IMPORTANT MEDICAL SAFETY NOTE:
- * Educational guidance only. ABO/Rh compatibility alone does not establish transfusion safety.
- * Actual transfusions require appropriate clinical assessment, blood typing, antibody screening,
- * crossmatching when indicated, and approval by qualified healthcare professionals under applicable protocols.
- * 
- * This module concerns RED BLOOD CELL transfusions only. Do not apply these rules to plasma or platelet transfusions.
+ * This tool provides general compatibility information only. Actual transfusion compatibility must
+ * be confirmed by qualified healthcare professionals through appropriate blood grouping,
+ * antibody screening, and crossmatching.
  */
 
 import { BloodGroup } from "./types";
 import { ALL_BLOOD_GROUPS } from "./constants";
 
-export const RED_CELL_COMPATIBILITY_DISCLAIMER =
-  "Educational guidance only. ABO/Rh compatibility alone does not establish transfusion safety. Actual transfusions require appropriate clinical assessment, blood typing, antibody screening, crossmatching when indicated, and approval by qualified healthcare professionals under applicable protocols.";
+export const COMPATIBILITY_CLINICAL_DISCLAIMER =
+  "This tool provides general compatibility information only. Actual transfusion compatibility must be confirmed by qualified healthcare professionals through appropriate blood grouping, antibody screening, and crossmatching.";
+
+export const RED_CELL_COMPATIBILITY_DISCLAIMER = COMPATIBILITY_CLINICAL_DISCLAIMER;
+
+export type SupportedComponent = "rbc" | "plasma";
 
 export interface BloodCompatibilityResult {
   isCompatible: boolean;
   donor: BloodGroup;
   recipient: BloodGroup;
+  component: SupportedComponent;
   message: string;
   isUniversalDonor: boolean;
   isUniversalRecipient: boolean;
@@ -30,7 +33,8 @@ export interface BloodCompatibilityResult {
 
 /**
  * Standard Red Blood Cell (RBC) Recipient -> Compatible Donors Mapping
- * Based on ABO and Rh(D) antigen compatibility rules.
+ * Based on ABO and Rh(D) surface antigens.
+ * O- is universal RBC donor; AB+ is universal RBC recipient.
  */
 export const RBC_RECIPIENT_TO_DONORS_MAP: Readonly<Record<BloodGroup, readonly BloodGroup[]>> = {
   "O-": ["O-"],
@@ -44,6 +48,24 @@ export const RBC_RECIPIENT_TO_DONORS_MAP: Readonly<Record<BloodGroup, readonly B
 } as const;
 
 /**
+ * Standard Plasma Recipient -> Compatible Donors Mapping
+ * Plasma compatibility is determined by circulating antibodies (Anti-A, Anti-B).
+ * AB plasma has no ABO antibodies (universal plasma donor).
+ * O plasma contains both anti-A and anti-B antibodies (can only donate to O).
+ * O recipients can receive plasma from any blood group (universal plasma recipient).
+ */
+export const PLASMA_RECIPIENT_TO_DONORS_MAP: Readonly<Record<BloodGroup, readonly BloodGroup[]>> = {
+  "O-": ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
+  "O+": ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
+  "A-": ["A-", "A+", "AB-", "AB+"],
+  "A+": ["A-", "A+", "AB-", "AB+"],
+  "B-": ["B-", "B+", "AB-", "AB+"],
+  "B+": ["B-", "B+", "AB-", "AB+"],
+  "AB-": ["AB-", "AB+"],
+  "AB+": ["AB-", "AB+"],
+} as const;
+
+/**
  * Normalized string sanitizer for Blood Group values (handles unicode minuses, spaces, case)
  */
 export function normalizeBloodGroup(input: unknown): string {
@@ -51,7 +73,7 @@ export function normalizeBloodGroup(input: unknown): string {
   return input
     .trim()
     .toUpperCase()
-    .replace(/[\u2212\u2013\u2014]/g, "-"); // Normalize unicode minus signs to standard ASCII hyphen
+    .replace(/[\u2212\u2013\u2014]/g, "-");
 }
 
 /**
@@ -64,37 +86,37 @@ export function isValidBloodGroup(bloodGroup: unknown): bloodGroup is BloodGroup
 }
 
 /**
- * Returns the list of blood groups that can safely donate red blood cells to the specified recipient.
- * If the input is invalid or missing, returns an empty array.
+ * Returns the list of blood groups that can donate the specified component to the recipient.
  */
 export function getCompatibleDonors(
-  recipientBloodGroup: BloodGroup | string | null | undefined
+  recipientBloodGroup: BloodGroup | string | null | undefined,
+  component: SupportedComponent = "rbc"
 ): BloodGroup[] {
   if (!recipientBloodGroup) return [];
   const normalized = normalizeBloodGroup(recipientBloodGroup);
   if (!isValidBloodGroup(normalized)) return [];
-  return [...RBC_RECIPIENT_TO_DONORS_MAP[normalized]];
+
+  const map = component === "plasma" ? PLASMA_RECIPIENT_TO_DONORS_MAP : RBC_RECIPIENT_TO_DONORS_MAP;
+  return [...map[normalized]];
 }
 
 /**
- * Returns the list of recipient blood groups that can safely receive red blood cells from the specified donor.
- * If the input is invalid or missing, returns an empty array.
+ * Returns the list of recipient blood groups that can receive the specified component from the donor.
  */
 export function getCompatibleRecipients(
-  donorBloodGroup: BloodGroup | string | null | undefined
+  donorBloodGroup: BloodGroup | string | null | undefined,
+  component: SupportedComponent = "rbc"
 ): BloodGroup[] {
   if (!donorBloodGroup) return [];
   const normalized = normalizeBloodGroup(donorBloodGroup);
   if (!isValidBloodGroup(normalized)) return [];
 
-  return ALL_BLOOD_GROUPS.filter((recipient) =>
-    RBC_RECIPIENT_TO_DONORS_MAP[recipient].includes(normalized)
-  );
+  const map = component === "plasma" ? PLASMA_RECIPIENT_TO_DONORS_MAP : RBC_RECIPIENT_TO_DONORS_MAP;
+  return ALL_BLOOD_GROUPS.filter((recipient) => map[recipient].includes(normalized));
 }
 
 /**
- * Checks whether a donor blood group is generally compatible to give red blood cells to a recipient blood group.
- * Returns false for any invalid, null, or undefined inputs.
+ * Checks whether a donor blood group is compatible for Red Blood Cell transfusion.
  */
 export function canDonateRedCells(
   donorBloodGroup: BloodGroup | string | null | undefined,
@@ -108,16 +130,77 @@ export function canDonateRedCells(
     return false;
   }
 
-  const allowedDonors = RBC_RECIPIENT_TO_DONORS_MAP[normalizedRecipient];
-  return allowedDonors.includes(normalizedDonor);
+  return RBC_RECIPIENT_TO_DONORS_MAP[normalizedRecipient].includes(normalizedDonor);
 }
 
 /**
- * Comprehensive compatibility calculation with detailed diagnostic output and safety disclaimers.
+ * Checks whether a donor blood group is compatible for Plasma transfusion.
+ */
+export function canDonatePlasma(
+  donorBloodGroup: BloodGroup | string | null | undefined,
+  recipientBloodGroup: BloodGroup | string | null | undefined
+): boolean {
+  if (!donorBloodGroup || !recipientBloodGroup) return false;
+  const normalizedDonor = normalizeBloodGroup(donorBloodGroup);
+  const normalizedRecipient = normalizeBloodGroup(recipientBloodGroup);
+
+  if (!isValidBloodGroup(normalizedDonor) || !isValidBloodGroup(normalizedRecipient)) {
+    return false;
+  }
+
+  return PLASMA_RECIPIENT_TO_DONORS_MAP[normalizedRecipient].includes(normalizedDonor);
+}
+
+/**
+ * Unified component donation check
+ */
+export function canDonate(
+  donorBloodGroup: BloodGroup | string | null | undefined,
+  recipientBloodGroup: BloodGroup | string | null | undefined,
+  component: SupportedComponent = "rbc"
+): boolean {
+  return component === "plasma"
+    ? canDonatePlasma(donorBloodGroup, recipientBloodGroup)
+    : canDonateRedCells(donorBloodGroup, recipientBloodGroup);
+}
+
+/**
+ * Returns true if blood group is considered universal donor for the given component
+ */
+export function isUniversalDonor(
+  bloodGroup: BloodGroup | string | null | undefined,
+  component: SupportedComponent = "rbc"
+): boolean {
+  if (!bloodGroup) return false;
+  const normalized = normalizeBloodGroup(bloodGroup);
+  if (component === "plasma") {
+    return normalized === "AB+" || normalized === "AB-";
+  }
+  return normalized === "O-";
+}
+
+/**
+ * Returns true if blood group is considered universal recipient for the given component
+ */
+export function isUniversalRecipient(
+  bloodGroup: BloodGroup | string | null | undefined,
+  component: SupportedComponent = "rbc"
+): boolean {
+  if (!bloodGroup) return false;
+  const normalized = normalizeBloodGroup(bloodGroup);
+  if (component === "plasma") {
+    return normalized === "O+" || normalized === "O-";
+  }
+  return normalized === "AB+";
+}
+
+/**
+ * Comprehensive compatibility calculation with detailed diagnostic output and clinical safety disclaimers.
  */
 export function getBloodGroupCompatibilityDetails(
   donorBloodGroup: BloodGroup | string | null | undefined,
-  recipientBloodGroup: BloodGroup | string | null | undefined
+  recipientBloodGroup: BloodGroup | string | null | undefined,
+  component: SupportedComponent = "rbc"
 ): BloodCompatibilityResult | null {
   if (!donorBloodGroup || !recipientBloodGroup) return null;
 
@@ -128,34 +211,56 @@ export function getBloodGroupCompatibilityDetails(
     return null;
   }
 
-  const isCompatible = canDonateRedCells(normalizedDonor, normalizedRecipient);
-  const isUniversalDonor = normalizedDonor === "O-";
-  const isUniversalRecipient = normalizedRecipient === "AB+";
+  const isCompatible = canDonate(normalizedDonor, normalizedRecipient, component);
+  const isUniversalDonor =
+    component === "plasma"
+      ? normalizedDonor.startsWith("AB")
+      : normalizedDonor === "O-";
+  const isUniversalRecipient =
+    component === "plasma"
+      ? normalizedRecipient.startsWith("O")
+      : normalizedRecipient === "AB+";
 
   let antigenSummary = "";
-  if (isCompatible) {
-    if (isUniversalDonor) {
-      antigenSummary = "O− red blood cells lack A, B, and Rh(D) surface antigens, making them generally compatible with all ABO/Rh recipient groups in emergencies.";
-    } else if (isUniversalRecipient) {
-      antigenSummary = "AB+ recipients have A, B, and Rh(D) antigens and do not naturally produce ABO/Rh antibodies against donor red cells.";
+  if (component === "plasma") {
+    if (isCompatible) {
+      if (normalizedDonor.startsWith("AB")) {
+        antigenSummary = "AB plasma lacks anti-A and anti-B antibodies, making AB donors universal plasma donors for all blood groups.";
+      } else if (normalizedRecipient.startsWith("O")) {
+        antigenSummary = "O recipients' red blood cells lack A and B antigens, meaning they can safely receive plasma containing anti-A or anti-B antibodies from all donor groups.";
+      } else {
+        antigenSummary = `Donor ${normalizedDonor} plasma does not carry conflicting antibodies against ${normalizedRecipient} red blood cells.`;
+      }
     } else {
-      antigenSummary = `Donor ${normalizedDonor} red blood cells do not present conflicting ABO or Rh antigens for a ${normalizedRecipient} recipient.`;
+      antigenSummary = `Donor ${normalizedDonor} plasma contains antibodies that would attack and hemolyze recipient ${normalizedRecipient} red blood cells.`;
     }
   } else {
-    antigenSummary = `Donor ${normalizedDonor} red cells carry antigens that may trigger immune antibody reactions in a ${normalizedRecipient} recipient.`;
+    // Red Blood Cells
+    if (isCompatible) {
+      if (normalizedDonor === "O-") {
+        antigenSummary = "O− red blood cells lack A, B, and Rh(D) surface antigens, making them generally compatible with all ABO/Rh recipient groups in emergencies.";
+      } else if (normalizedRecipient === "AB+") {
+        antigenSummary = "AB+ recipients have A, B, and Rh(D) antigens and do not naturally produce ABO/Rh antibodies against donor red cells.";
+      } else {
+        antigenSummary = `Donor ${normalizedDonor} red blood cells do not present conflicting ABO or Rh antigens for a ${normalizedRecipient} recipient.`;
+      }
+    } else {
+      antigenSummary = `Donor ${normalizedDonor} red cells carry antigens that may trigger immune antibody reactions in a ${normalizedRecipient} recipient.`;
+    }
   }
 
   return {
     isCompatible,
     donor: normalizedDonor,
     recipient: normalizedRecipient,
+    component,
     message: isCompatible
-      ? "Generally compatible for red blood cell transfusion."
-      : "Not generally compatible for red blood cell transfusion.",
+      ? `Generally compatible for ${component === "plasma" ? "plasma" : "red blood cell"} transfusion.`
+      : `Not generally compatible for ${component === "plasma" ? "plasma" : "red blood cell"} transfusion.`,
     isUniversalDonor,
     isUniversalRecipient,
     antigenSummary,
-    disclaimer: RED_CELL_COMPATIBILITY_DISCLAIMER,
+    disclaimer: COMPATIBILITY_CLINICAL_DISCLAIMER,
   };
 }
 
@@ -170,8 +275,14 @@ export interface BloodGroupMeta {
   antibodiesInPlasma: string;
   canDonateTo: BloodGroup[];
   canReceiveFrom: BloodGroup[];
-  isUniversalDonor: boolean;
-  isUniversalRecipient: boolean;
+  canDonateRbcTo: BloodGroup[];
+  canReceiveRbcFrom: BloodGroup[];
+  canDonatePlasmaTo: BloodGroup[];
+  canReceivePlasmaFrom: BloodGroup[];
+  isUniversalRbcDonor: boolean;
+  isUniversalRbcRecipient: boolean;
+  isUniversalPlasmaDonor: boolean;
+  isUniversalPlasmaRecipient: boolean;
 }
 
 export const BLOOD_GROUP_DIRECTORY: Record<BloodGroup, BloodGroupMeta> = {
@@ -183,8 +294,14 @@ export const BLOOD_GROUP_DIRECTORY: Record<BloodGroup, BloodGroupMeta> = {
     antibodiesInPlasma: "Anti-A, Anti-B, Anti-Rh",
     canDonateTo: ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
     canReceiveFrom: ["O-"],
-    isUniversalDonor: true,
-    isUniversalRecipient: false,
+    canDonateRbcTo: ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
+    canReceiveRbcFrom: ["O-"],
+    canDonatePlasmaTo: ["O-", "O+"],
+    canReceivePlasmaFrom: ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
+    isUniversalRbcDonor: true,
+    isUniversalRbcRecipient: false,
+    isUniversalPlasmaDonor: false,
+    isUniversalPlasmaRecipient: true,
   },
   "O+": {
     group: "O+",
@@ -194,8 +311,14 @@ export const BLOOD_GROUP_DIRECTORY: Record<BloodGroup, BloodGroupMeta> = {
     antibodiesInPlasma: "Anti-A, Anti-B",
     canDonateTo: ["O+", "A+", "B+", "AB+"],
     canReceiveFrom: ["O-", "O+"],
-    isUniversalDonor: false,
-    isUniversalRecipient: false,
+    canDonateRbcTo: ["O+", "A+", "B+", "AB+"],
+    canReceiveRbcFrom: ["O-", "O+"],
+    canDonatePlasmaTo: ["O-", "O+"],
+    canReceivePlasmaFrom: ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
+    isUniversalRbcDonor: false,
+    isUniversalRbcRecipient: false,
+    isUniversalPlasmaDonor: false,
+    isUniversalPlasmaRecipient: true,
   },
   "A-": {
     group: "A-",
@@ -205,8 +328,14 @@ export const BLOOD_GROUP_DIRECTORY: Record<BloodGroup, BloodGroupMeta> = {
     antibodiesInPlasma: "Anti-B, Anti-Rh",
     canDonateTo: ["A-", "A+", "AB-", "AB+"],
     canReceiveFrom: ["O-", "A-"],
-    isUniversalDonor: false,
-    isUniversalRecipient: false,
+    canDonateRbcTo: ["A-", "A+", "AB-", "AB+"],
+    canReceiveRbcFrom: ["O-", "A-"],
+    canDonatePlasmaTo: ["A-", "A+", "O-", "O+"],
+    canReceivePlasmaFrom: ["A-", "A+", "AB-", "AB+"],
+    isUniversalRbcDonor: false,
+    isUniversalRbcRecipient: false,
+    isUniversalPlasmaDonor: false,
+    isUniversalPlasmaRecipient: false,
   },
   "A+": {
     group: "A+",
@@ -216,8 +345,14 @@ export const BLOOD_GROUP_DIRECTORY: Record<BloodGroup, BloodGroupMeta> = {
     antibodiesInPlasma: "Anti-B",
     canDonateTo: ["A+", "AB+"],
     canReceiveFrom: ["O-", "O+", "A-", "A+"],
-    isUniversalDonor: false,
-    isUniversalRecipient: false,
+    canDonateRbcTo: ["A+", "AB+"],
+    canReceiveRbcFrom: ["O-", "O+", "A-", "A+"],
+    canDonatePlasmaTo: ["A-", "A+", "O-", "O+"],
+    canReceivePlasmaFrom: ["A-", "A+", "AB-", "AB+"],
+    isUniversalRbcDonor: false,
+    isUniversalRbcRecipient: false,
+    isUniversalPlasmaDonor: false,
+    isUniversalPlasmaRecipient: false,
   },
   "B-": {
     group: "B-",
@@ -227,8 +362,14 @@ export const BLOOD_GROUP_DIRECTORY: Record<BloodGroup, BloodGroupMeta> = {
     antibodiesInPlasma: "Anti-A, Anti-Rh",
     canDonateTo: ["B-", "B+", "AB-", "AB+"],
     canReceiveFrom: ["O-", "B-"],
-    isUniversalDonor: false,
-    isUniversalRecipient: false,
+    canDonateRbcTo: ["B-", "B+", "AB-", "AB+"],
+    canReceiveRbcFrom: ["O-", "B-"],
+    canDonatePlasmaTo: ["B-", "B+", "O-", "O+"],
+    canReceivePlasmaFrom: ["B-", "B+", "AB-", "AB+"],
+    isUniversalRbcDonor: false,
+    isUniversalRbcRecipient: false,
+    isUniversalPlasmaDonor: false,
+    isUniversalPlasmaRecipient: false,
   },
   "B+": {
     group: "B+",
@@ -238,8 +379,14 @@ export const BLOOD_GROUP_DIRECTORY: Record<BloodGroup, BloodGroupMeta> = {
     antibodiesInPlasma: "Anti-A",
     canDonateTo: ["B+", "AB+"],
     canReceiveFrom: ["O-", "O+", "B-", "B+"],
-    isUniversalDonor: false,
-    isUniversalRecipient: false,
+    canDonateRbcTo: ["B+", "AB+"],
+    canReceiveRbcFrom: ["O-", "O+", "B-", "B+"],
+    canDonatePlasmaTo: ["B-", "B+", "O-", "O+"],
+    canReceivePlasmaFrom: ["B-", "B+", "AB-", "AB+"],
+    isUniversalRbcDonor: false,
+    isUniversalRbcRecipient: false,
+    isUniversalPlasmaDonor: false,
+    isUniversalPlasmaRecipient: false,
   },
   "AB-": {
     group: "AB-",
@@ -249,8 +396,14 @@ export const BLOOD_GROUP_DIRECTORY: Record<BloodGroup, BloodGroupMeta> = {
     antibodiesInPlasma: "Anti-Rh",
     canDonateTo: ["AB-", "AB+"],
     canReceiveFrom: ["O-", "A-", "B-", "AB-"],
-    isUniversalDonor: false,
-    isUniversalRecipient: false,
+    canDonateRbcTo: ["AB-", "AB+"],
+    canReceiveRbcFrom: ["O-", "A-", "B-", "AB-"],
+    canDonatePlasmaTo: ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
+    canReceivePlasmaFrom: ["AB-", "AB+"],
+    isUniversalRbcDonor: false,
+    isUniversalRbcRecipient: false,
+    isUniversalPlasmaDonor: true,
+    isUniversalPlasmaRecipient: false,
   },
   "AB+": {
     group: "AB+",
@@ -260,7 +413,13 @@ export const BLOOD_GROUP_DIRECTORY: Record<BloodGroup, BloodGroupMeta> = {
     antibodiesInPlasma: "None",
     canDonateTo: ["AB+"],
     canReceiveFrom: ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
-    isUniversalDonor: false,
-    isUniversalRecipient: true,
+    canDonateRbcTo: ["AB+"],
+    canReceiveRbcFrom: ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
+    canDonatePlasmaTo: ["O-", "O+", "A-", "A+", "B-", "B+", "AB-", "AB+"],
+    canReceivePlasmaFrom: ["AB-", "AB+"],
+    isUniversalRbcDonor: false,
+    isUniversalRbcRecipient: true,
+    isUniversalPlasmaDonor: true,
+    isUniversalPlasmaRecipient: false,
   },
 };

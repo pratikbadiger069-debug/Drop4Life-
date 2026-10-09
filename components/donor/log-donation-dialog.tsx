@@ -125,7 +125,7 @@ export function LogDonationDialog({
             Donation Center / Hospital Name *
           </label>
           <Input
-            placeholder="e.g. Mount Sinai Blood Center, Red Cross Drive"
+            placeholder="e.g. Apollo Hospital Blood Center, Red Cross Camp"
             value={facilityName}
             onChange={(e) => setFacilityName(e.target.value)}
             required
@@ -139,7 +139,7 @@ export function LogDonationDialog({
               City
             </label>
             <Input
-              placeholder="e.g. New York"
+              placeholder="e.g. Hyderabad"
               value={facilityCity}
               onChange={(e) => setFacilityCity(e.target.value)}
             />

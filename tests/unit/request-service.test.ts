@@ -17,9 +17,9 @@ describe("Request Service (Phase 7)", () => {
         priority: "CRITICAL",
         requiredDate: "2026-10-15",
         department: "Trauma ICU",
-        city: "New York",
-        area: "Manhattan",
-        requesterPhone: "+1 (555) 911-7890",
+        city: "Hyderabad",
+        area: "Jubilee Hills",
+        requesterPhone: "+91 98765 00002",
         clinicalNotes: "Urgent trauma surgery prep.",
       };
 

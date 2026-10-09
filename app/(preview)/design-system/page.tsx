@@ -248,13 +248,13 @@ export default function DesignSystemPage() {
 
               <Input
                 label="Full Name"
-                placeholder="Dr. Sarah Connor"
+                placeholder="Dr. Rajesh Verma"
                 helperText="Enter your legal identification name."
               />
 
               <Input
                 label="Emergency Contact Phone"
-                placeholder="+1 (555) 019-2834"
+                placeholder="+91 98765 00001"
                 error="Invalid phone number format."
               />
 
@@ -581,17 +581,17 @@ export default function DesignSystemPage() {
                 role={previewRole}
                 userName={
                   previewRole === "donor"
-                    ? "Alex Morgan (Donor)"
+                    ? "Rahul Kumar (Donor)"
                     : previewRole === "hospital"
-                    ? "Dr. David Brooks (St. Jude)"
-                    : "Elena Vance (Red Cross NGO)"
+                    ? "Dr. Rajesh Verma (Apollo Hospital)"
+                    : "Priya Reddy (Youth Red Cross NGO)"
                 }
                 userEmail={
                   previewRole === "donor"
-                    ? "alex.donor@drop4life.org"
+                    ? "rahul.donor@drop4life.org"
                     : previewRole === "hospital"
-                    ? "trauma.desk@stjude.org"
-                    : "coordinator@redcross-ngo.org"
+                    ? "trauma.desk@apollo-hyd.org"
+                    : "coordinator@redcross-lifeline.org"
                 }
                 navItems={
                   previewRole === "donor"
@@ -605,8 +605,8 @@ export default function DesignSystemPage() {
                   <div className="flex items-center justify-between border-b pb-4">
                     <div>
                       <h2 className="text-xl font-bold text-slate-900">
-                        {previewRole === "donor" && "Welcome, Alex Morgan"}
-                        {previewRole === "hospital" && "Emergency Blood Radar — St. Jude"}
+                        {previewRole === "donor" && "Welcome, Rahul Kumar"}
+                        {previewRole === "hospital" && "Emergency Blood Radar — Apollo Hospital"}
                         {previewRole === "ngo" && "Campaign Coordination Command"}
                       </h2>
                       <p className="text-xs text-muted-foreground mt-0.5">

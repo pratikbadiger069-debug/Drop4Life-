@@ -47,7 +47,7 @@ export function CampaignRegistrationDialog({
       setUserEmail("");
       setBloodGroup("O-");
     }
-    setUserPhone("+1 (555) 000-0000");
+    setUserPhone("+91 98765 00001");
     setParticipantRole("donor");
     setNotes("");
     setErrorMsg(null);

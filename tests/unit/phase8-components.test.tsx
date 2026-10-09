@@ -119,7 +119,7 @@ describe("Phase 8 UI Components", () => {
     // Switch to list view
     fireEvent.click(listBtn);
     await waitFor(() => {
-      expect(screen.getByText(/St\. Jude Medical Center/i)).toBeInTheDocument();
+      expect(screen.getByText(/Apollo Hospital Jubilee Hills/i)).toBeInTheDocument();
     });
   });
 
@@ -131,9 +131,9 @@ describe("Phase 8 UI Components", () => {
             id: "part-1",
             campaignId: "camp-test-1",
             userId: "usr-donor-001",
-            userName: "Alex Morgan",
+            userName: "Rahul Kumar",
             userEmail: "donor@drop4life.org",
-            bloodGroup: "O-",
+            bloodGroup: "O+",
             participantRole: "donor",
             registeredAt: "2026-10-05T00:00:00Z",
             status: "REGISTERED",
@@ -142,7 +142,7 @@ describe("Phase 8 UI Components", () => {
       />
     );
 
-    expect(screen.getByText("Alex Morgan")).toBeInTheDocument();
+    expect(screen.getByText("Rahul Kumar")).toBeInTheDocument();
     expect(screen.getByText("donor@drop4life.org")).toBeInTheDocument();
     expect(screen.getByText(/Total Registrations/i)).toBeInTheDocument();
     expect(screen.getByText(/Pledged Donors/i)).toBeInTheDocument();

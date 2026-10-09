@@ -42,6 +42,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/request-blood" className="hover:text-white transition-colors font-semibold text-red-300 hover:text-red-200">
+                  Request Blood
+                </Link>
+              </li>
+              <li>
                 <Link href="/find-blood" className="hover:text-white transition-colors">
                   Find Blood
                 </Link>

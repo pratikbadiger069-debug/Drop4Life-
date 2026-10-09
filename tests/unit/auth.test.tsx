@@ -11,19 +11,31 @@ describe("Authentication Adapter (Phase 3)", () => {
     expect(session.user).toBeDefined();
     expect(session.user.role).toBe("donor");
     expect(session.user.email).toBe("donor@drop4life.org");
-    expect(session.user.fullName).toBe("Alex Morgan");
+    expect(session.user.fullName).toBe("Rahul Kumar");
   });
 
   it("authenticates valid hospital demo account", async () => {
     const session = await authAdapter.login("hospital@drop4life.org", "HospitalPass123!");
     expect(session.user.role).toBe("hospital");
-    expect(session.user.organizationName).toBe("St. Jude Medical Center");
+    expect(session.user.organizationName).toBe("Apollo Hospital Jubilee Hills");
   });
 
   it("authenticates valid ngo demo account", async () => {
     const session = await authAdapter.login("ngo@drop4life.org", "NgoPass123!");
     expect(session.user.role).toBe("ngo");
-    expect(session.user.organizationName).toBe("Red Cross LifeCare Auxiliary");
+    expect(session.user.organizationName).toBe("Youth Red Cross Society & Lifeline");
+  });
+
+  it("authenticates valid recipient demo account", async () => {
+    const session = await authAdapter.login("recipient@drop4life.org", "RecipientPass123!");
+    expect(session.user.role).toBe("recipient");
+    expect(session.user.fullName).toBe("Ananya Patel");
+  });
+
+  it("authenticates valid bloodbank demo account", async () => {
+    const session = await authAdapter.login("bloodbank@drop4life.org", "BloodBankPass123!");
+    expect(session.user.role).toBe("bloodbank");
+    expect(session.user.fullName).toBe("Dr. Sneha Nair");
   });
 
   it("rejects invalid credentials with generic error message", async () => {
@@ -38,7 +50,7 @@ describe("Authentication Adapter (Phase 3)", () => {
       email: "test.donor@example.com",
       password: "TestPass123!",
       bloodGroup: "A+",
-      city: "Boston",
+      city: "Bengaluru",
       isAvailable: true,
     });
 
@@ -50,19 +62,19 @@ describe("Authentication Adapter (Phase 3)", () => {
 
   it("registers a new hospital with pending verification status", async () => {
     const session = await authAdapter.registerHospital({
-      hospitalName: "Boston General Hospital",
-      licenseNumber: "LIC-BOS-1029",
+      hospitalName: "Apollo Hospital Jubilee Hills",
+      licenseNumber: "TS-MED-1029",
       department: "Emergency Trauma",
-      contactPerson: "Dr. Elizabeth Stone",
-      workEmail: "trauma@bostongeneral.org",
+      contactPerson: "Dr. Rajesh Verma",
+      workEmail: "trauma@apollo-hyd.org",
       password: "HospPass123!",
-      phone: "+1 555-0192",
-      city: "Boston",
-      address: "100 Health Way",
+      phone: "+91 98765 00002",
+      city: "Hyderabad",
+      address: "Road No. 72, Jubilee Hills",
     });
 
     expect(session.user.role).toBe("hospital");
-    expect(session.user.organizationName).toBe("Boston General Hospital");
+    expect(session.user.organizationName).toBe("Apollo Hospital Jubilee Hills");
     expect(session.user.verificationStatus).toBe("pending");
   });
 

@@ -4,11 +4,11 @@ export const APP_CONFIG = {
   name: "Drop4Life",
   tagline: "Every Drop Can Save a Life.",
   description:
-    "A mission-critical blood donation and emergency blood coordination platform connecting donors, hospitals, and NGOs.",
+    "A mission-critical blood donation and emergency blood coordination platform connecting donors, hospitals, and NGOs across India.",
   version: "1.0.0",
   contact: {
     email: "support@drop4life.org",
-    emergencyHelpline: "1-800-DROP4LIFE",
+    emergencyHelpline: "1800-11-4433",
   },
 } as const;
 
@@ -35,13 +35,13 @@ export const PRIORITY_CONFIG: Record<
 
 export const PUBLIC_NAV_ITEMS = [
   { title: "Home", href: "/" },
-  { title: "How It Works", href: "/how-it-works" },
+  { title: "Request Blood", href: "/request-blood" },
   { title: "Find Blood", href: "/find-blood" },
+  { title: "How It Works", href: "/how-it-works" },
   { title: "Compatibility", href: "/blood-compatibility" },
   { title: "Campaigns", href: "/campaigns" },
   { title: "About", href: "/about" },
   { title: "Contact", href: "/contact" },
-  { title: "Design System", href: "/design-system" },
 ];
 
 export const DONOR_AVAILABILITY_CONFIG: Record<
@@ -233,4 +233,102 @@ export const ADMIN_NAV_ITEMS = [
   { title: "Requisitions Oversight", href: "/admin/requests", icon: "Send", disabled: false },
   { title: "Campaign Oversight", href: "/admin/campaigns", icon: "Flag", disabled: false },
 ];
+
+export const RECIPIENT_NAV_ITEMS = [
+  { title: "My Requests", href: "/recipient/dashboard", icon: "Send", disabled: false },
+  { title: "Request Blood", href: "/request-blood", icon: "PlusCircle", disabled: false },
+  { title: "Find Blood", href: "/find-blood", icon: "Search", disabled: false },
+  { title: "Notifications", href: "/donor/notifications", icon: "Bell", disabled: false },
+];
+
+export const BLOOD_BANK_NAV_ITEMS = [
+  { title: "Inventory Dashboard", href: "/bloodbank/dashboard", icon: "Layers", disabled: false },
+  { title: "Emergency Requisitions", href: "/hospital/requests", icon: "Send", disabled: false },
+  { title: "Donor Matching", href: "/hospital/donors", icon: "Users", disabled: false },
+  { title: "Notifications", href: "/hospital/notifications", icon: "Bell", disabled: false },
+];
+
+export const INDIAN_CITIES = [
+  "Hyderabad",
+  "Bengaluru",
+  "Chennai",
+  "Mumbai",
+  "New Delhi",
+  "Vijayawada",
+  "Visakhapatnam",
+  "Kolkata",
+  "Pune",
+  "Kochi",
+  "Ahmedabad",
+  "Jaipur",
+] as const;
+
+export const INDIAN_STATES = [
+  "Telangana",
+  "Andhra Pradesh",
+  "Karnataka",
+  "Tamil Nadu",
+  "Maharashtra",
+  "Delhi NCR",
+  "West Bengal",
+  "Kerala",
+  "Gujarat",
+  "Rajasthan",
+] as const;
+
+export const DONOR_REWARD_TIERS = {
+  BRONZE: {
+    level: "BRONZE" as const,
+    threshold: 1,
+    name: "Bronze Lifesaver",
+    description: "Completed first verified life-saving blood donation.",
+    badgeClass: "bg-amber-100 text-amber-900 border-amber-300",
+  },
+  SILVER: {
+    level: "SILVER" as const,
+    threshold: 3,
+    name: "Silver Lifesaver",
+    description: "Completed 3 verified blood donations — stabilizing community reserves.",
+    badgeClass: "bg-slate-200 text-slate-800 border-slate-300",
+  },
+  GOLD: {
+    level: "GOLD" as const,
+    threshold: 5,
+    name: "Gold Lifesaver",
+    description: "Completed 5 verified blood donations — an esteemed emergency hero.",
+    badgeClass: "bg-yellow-100 text-yellow-900 border-yellow-300",
+  },
+  PLATINUM: {
+    level: "PLATINUM" as const,
+    threshold: 10,
+    name: "Platinum Lifesaver",
+    description: "Completed 10+ verified blood donations — exceptional civic lifesaver.",
+    badgeClass: "bg-indigo-100 text-indigo-900 border-indigo-300",
+  },
+} as const;
+
+/**
+ * Validates Indian standard mobile numbers: 10 digits starting with 6, 7, 8, or 9
+ * Supports +91, 0, or clean 10-digit formats.
+ */
+export function isValidIndianPhoneNumber(phone: string): boolean {
+  if (!phone) return false;
+  const cleaned = phone.replace(/[\s\-()]/g, "");
+  return /^(\+91|0)?[6-9]\d{9}$/.test(cleaned);
+}
+
+/**
+ * Formats a valid Indian mobile number to canonical "+91 XXXXX XXXXX"
+ */
+export function formatIndianPhoneNumber(phone: string): string {
+  if (!phone) return "";
+  const cleaned = phone.replace(/[\s\-()]/g, "");
+  const match = cleaned.match(/^(\+91|0)?([6-9]\d{9})$/);
+  if (match) {
+    const num = match[2];
+    return `+91 ${num.slice(0, 5)} ${num.slice(5)}`;
+  }
+  return phone;
+}
+
 

@@ -23,7 +23,7 @@ export function CampaignFormDialog({
   onOpenChange,
   campaignToEdit,
   onCampaignSaved,
-  defaultCity = "New York",
+  defaultCity = "Bengaluru",
 }: CampaignFormDialogProps) {
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -37,7 +37,7 @@ export function CampaignFormDialog({
   const [endTime, setEndTime] = useState<string>("05:00 PM");
   const [targetUnits, setTargetUnits] = useState<number>(200);
   const [capacityLimit, setCapacityLimit] = useState<number | undefined>(250);
-  const [contactPhone, setContactPhone] = useState<string>("+1 (555) 456-7890");
+  const [contactPhone, setContactPhone] = useState<string>("+91 98765 00003");
   const [contactEmail, setContactEmail] = useState<string>("ngo@drop4life.org");
   const [registrationInstructions, setRegistrationInstructions] = useState<string>("");
   const [status, setStatus] = useState<CampaignStatus>("PUBLISHED");

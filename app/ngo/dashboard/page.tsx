@@ -276,7 +276,7 @@ export default function NgoDashboardPage() {
           open={isCreateOpen}
           onOpenChange={setIsCreateOpen}
           onCampaignSaved={handleCampaignSaved}
-          defaultCity={user?.city || "New York"}
+          defaultCity={user?.city || "Bengaluru"}
         />
       </DashboardShell>
     </ProtectedRoute>

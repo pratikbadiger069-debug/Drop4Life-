@@ -33,26 +33,26 @@ describe("Admin Components Testing", () => {
     {
       id: "ver-1",
       userId: "usr-hosp-002",
-      name: "St. Jude Medical Center",
+      name: "Apollo Hospital Jubilee Hills",
       type: "hospital",
-      contactPerson: "Dr. David Brooks",
+      contactPerson: "Dr. Rajesh Verma",
       email: "hospital@drop4life.org",
-      phone: "+1 555-1234",
-      city: "New York",
-      licenseOrRegId: "NY-MED-884210-A",
+      phone: "+91 98765 00002",
+      city: "Hyderabad",
+      licenseOrRegId: "TS-MED-884210-A",
       verificationStatus: "pending",
       submittedAt: "2026-10-01T00:00:00Z",
     },
     {
       id: "ver-2",
       userId: "usr-ngo-003",
-      name: "Red Cross LifeCare Auxiliary",
+      name: "Youth Red Cross Society & Lifeline",
       type: "ngo",
-      contactPerson: "Elena Vance",
+      contactPerson: "Priya Reddy",
       email: "ngo@drop4life.org",
-      phone: "+1 555-5678",
-      city: "New York",
-      licenseOrRegId: "NY-NGO-2024-8841",
+      phone: "+91 98765 00003",
+      city: "Bengaluru",
+      licenseOrRegId: "KA-NGO-2024-8841",
       verificationStatus: "verified",
       submittedAt: "2026-09-15T00:00:00Z",
     },
@@ -62,23 +62,23 @@ describe("Admin Components Testing", () => {
     {
       id: "usr-1",
       email: "donor@drop4life.org",
-      fullName: "Alex Morgan",
+      fullName: "Rahul Kumar",
       role: "donor",
       status: "active",
       verificationStatus: "active",
       bloodGroup: "O+",
-      city: "New York",
+      city: "Hyderabad",
       createdAt: "2026-09-01T00:00:00Z",
     },
     {
       id: "usr-2",
       email: "hospital@drop4life.org",
-      fullName: "Dr. David Brooks",
-      organizationName: "St. Jude Medical Center",
+      fullName: "Dr. Rajesh Verma",
+      organizationName: "Apollo Hospital Jubilee Hills",
       role: "hospital",
       status: "active",
       verificationStatus: "verified",
-      city: "New York",
+      city: "Hyderabad",
       createdAt: "2026-09-05T00:00:00Z",
     },
   ];
@@ -104,7 +104,7 @@ describe("Admin Components Testing", () => {
       action: "VERIFICATION_DECISION",
       targetType: "ORGANIZATION",
       targetId: "usr-hosp-002",
-      details: "Approved license NY-MED-884210-A.",
+      details: "Approved license TS-MED-884210-A.",
     },
   ];
 
@@ -147,7 +147,7 @@ describe("Admin Components Testing", () => {
       />
     );
 
-    expect(screen.getByText("St. Jude Medical Center")).toBeInTheDocument();
+    expect(screen.getByText("Apollo Hospital Jubilee Hills")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Approve/i })).toBeInTheDocument();
   });
 
@@ -160,21 +160,21 @@ describe("Admin Components Testing", () => {
       />
     );
 
-    expect(screen.getByText("Alex Morgan")).toBeInTheDocument();
-    expect(screen.getByText("Dr. David Brooks")).toBeInTheDocument();
+    expect(screen.getByText("Rahul Kumar")).toBeInTheDocument();
+    expect(screen.getByText("Dr. Rajesh Verma")).toBeInTheDocument();
 
     const searchInput = screen.getByPlaceholderText(/Search by name/i);
-    fireEvent.change(searchInput, { target: { value: "Alex" } });
+    fireEvent.change(searchInput, { target: { value: "Rahul" } });
 
-    expect(screen.getByText("Alex Morgan")).toBeInTheDocument();
-    expect(screen.queryByText("Dr. David Brooks")).not.toBeInTheDocument();
+    expect(screen.getByText("Rahul Kumar")).toBeInTheDocument();
+    expect(screen.queryByText("Dr. Rajesh Verma")).not.toBeInTheDocument();
   });
 
   it("renders AuditLogViewer and displays log entries", () => {
     render(<AuditLogViewer logs={mockLogs} />);
 
     expect(screen.getByText(/Adjusted blood units for O- negative reserve/i)).toBeInTheDocument();
-    expect(screen.getByText(/Approved license NY-MED-884210-A/i)).toBeInTheDocument();
+    expect(screen.getByText(/Approved license TS-MED-884210-A/i)).toBeInTheDocument();
   });
 
   it("renders ReportsGenerator with summary data", () => {

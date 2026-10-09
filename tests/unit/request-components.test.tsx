@@ -11,29 +11,29 @@ const mockRequest: BloodRequest = {
   id: "req-test-01",
   referenceNumber: "REQ-2026-9999",
   hospitalId: "usr-hosp-002",
-  hospitalName: "St. Jude Medical Center",
+  hospitalName: "Apollo Hospital Jubilee Hills",
   department: "Trauma Surgery",
   bloodGroup: "O-",
   unitsNeeded: 3,
   unitsFulfilled: 1,
   priority: "CRITICAL",
   requiredDate: "2026-10-15",
-  city: "New York",
-  requesterName: "Dr. David Brooks",
-  requesterPhone: "+1 (555) 911-7890",
+  city: "Hyderabad",
+  requesterName: "Dr. Rajesh Verma",
+  requesterPhone: "+91 98765 00002",
   requesterEmail: "hospital@drop4life.org",
   status: "IN_PROGRESS",
   statusTimeline: [
     {
       status: "SUBMITTED",
       timestamp: "2026-10-09T08:00:00.000Z",
-      updatedBy: "Dr. David Brooks",
+      updatedBy: "Dr. Rajesh Verma",
       notes: "Initial intake.",
     },
     {
       status: "IN_PROGRESS",
       timestamp: "2026-10-09T09:00:00.000Z",
-      updatedBy: "Dr. David Brooks",
+      updatedBy: "Dr. Rajesh Verma",
       notes: "Donor search started.",
     },
   ],
@@ -45,15 +45,15 @@ const mockMatches: DonorMatchResult[] = [
   {
     donorId: "prof-donor-001",
     userId: "usr-donor-001",
-    donorName: "Alex Morgan",
+    donorName: "Rahul Kumar",
     bloodGroup: "O-",
-    city: "New York",
-    area: "Manhattan",
+    city: "Hyderabad",
+    area: "Jubilee Hills",
     preferredContactMethod: "SMS",
     matchScore: 95,
     isExactMatch: true,
     compatibilityType: "EXACT",
-    matchExplanation: "Exact ABO/Rh match (O-) • Located in New York (Manhattan) • Full 56-day rest cycle elapsed",
+    matchExplanation: "Exact ABO/Rh match (O-) • Located in Hyderabad (Jubilee Hills) • Full 56-day rest cycle elapsed",
     daysSinceLastDonation: 70,
   },
 ];
@@ -113,7 +113,7 @@ describe("Request & Matching UI Components (Phase 7)", () => {
       expect(
         screen.getByText(/Preliminary Match Disclaimer & Clinical Safety Note/i)
       ).toBeInTheDocument();
-      expect(screen.getByText("Alex Morgan")).toBeInTheDocument();
+      expect(screen.getByText("Rahul Kumar")).toBeInTheDocument();
       expect(screen.getByText("95%")).toBeInTheDocument();
       expect(screen.getByText("Invite Donor")).toBeInTheDocument();
     });

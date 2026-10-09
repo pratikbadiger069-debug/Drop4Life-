@@ -6,7 +6,7 @@ describe("Find Blood Page Interactions", () => {
   it("renders search bar and filters", () => {
     render(<FindBloodPage />);
     expect(screen.getByLabelText(/blood group/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/e\.g\. new york/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/e\.g\. hyderabad/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/urgency priority/i)).toBeInTheDocument();
   });
 
@@ -16,12 +16,12 @@ describe("Find Blood Page Interactions", () => {
     fireEvent.change(groupSelect, { target: { value: "O-" } });
 
     // Should display O- request
-    expect(screen.getByText("Metro General Hospital")).toBeInTheDocument();
+    expect(screen.getByText("Apollo Hospital Jubilee Hills")).toBeInTheDocument();
   });
 
   it("displays empty state when no matching results exist", () => {
     render(<FindBloodPage />);
-    const locationInput = screen.getByPlaceholderText(/e\.g\. new york/i);
+    const locationInput = screen.getByPlaceholderText(/e\.g\. hyderabad/i);
     fireEvent.change(locationInput, { target: { value: "NonExistentCityXYZ" } });
 
     expect(screen.getByText(/no blood requests found/i)).toBeInTheDocument();

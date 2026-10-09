@@ -274,7 +274,7 @@ export default function NgoCampaignsPage() {
           onOpenChange={setIsFormOpen}
           campaignToEdit={editingCampaign}
           onCampaignSaved={handleCampaignSaved}
-          defaultCity={user?.city || "New York"}
+          defaultCity={user?.city || "Bengaluru"}
         />
       </DashboardShell>
     </ProtectedRoute>

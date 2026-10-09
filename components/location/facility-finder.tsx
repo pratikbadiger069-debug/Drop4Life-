@@ -122,12 +122,15 @@ export function FacilityFinder({
                   className="w-full h-9 rounded-md border border-slate-200 bg-white px-3 text-xs focus:border-red-500 focus:outline-none"
                   aria-label="Filter by City"
                 >
-                  <option value="">All Regions</option>
-                  <option value="New York">New York / Manhattan</option>
-                  <option value="Brooklyn">Brooklyn</option>
-                  <option value="Queens">Queens</option>
-                  <option value="Boston">Boston</option>
-                  <option value="Chicago">Chicago</option>
+                  <option value="">All Regions (India)</option>
+                  <option value="Hyderabad">Hyderabad</option>
+                  <option value="Bengaluru">Bengaluru</option>
+                  <option value="New Delhi">New Delhi</option>
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Chennai">Chennai</option>
+                  <option value="Visakhapatnam">Visakhapatnam</option>
+                  <option value="Vijayawada">Vijayawada</option>
+                  <option value="Kochi">Kochi</option>
                 </select>
               </div>
 

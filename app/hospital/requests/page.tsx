@@ -400,7 +400,7 @@ export default function HospitalRequestsPage() {
           onOpenChange={setIsCreateOpen}
           onRequestCreated={handleRequestCreated}
           defaultBloodGroup="O-"
-          defaultCity={user?.city || "New York"}
+          defaultCity={user?.city || "Hyderabad"}
         />
       </DashboardShell>
     </ProtectedRoute>

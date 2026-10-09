@@ -15,6 +15,11 @@ import { LogDonationDialog } from "@/components/donor/log-donation-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { DonorRewardsCard } from "@/components/donor/donor-rewards-card";
+import { DonorAppointmentsCard } from "@/components/donor/donor-appointments-card";
+import { MedicalPrescreeningDialog } from "@/components/screening/medical-prescreening-dialog";
+import { medicalScreeningService } from "@/lib/screening/screening-service";
+import { MedicalPreScreeningResponse } from "@/lib/types";
 import {
   Heart,
   Droplet,
@@ -27,6 +32,8 @@ import {
   ArrowRight,
   PlusCircle,
   AlertTriangle,
+  Stethoscope,
+  Award,
 } from "lucide-react";
 
 export default function DonorDashboardPage() {
@@ -35,6 +42,8 @@ export default function DonorDashboardPage() {
   const [records, setRecords] = useState<DonationRecord[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isLogModalOpen, setIsLogModalOpen] = useState<boolean>(false);
+  const [isScreeningModalOpen, setIsScreeningModalOpen] = useState<boolean>(false);
+  const [screening, setScreening] = useState<MedicalPreScreeningResponse | null>(null);
 
   useEffect(() => {
     if (!user?.id) return;
@@ -47,9 +56,11 @@ export default function DonorDashboardPage() {
           donorService.getDonorProfile(currentUserId),
           donorService.getDonationHistory(currentUserId),
         ]);
+        const scr = medicalScreeningService.getLatestScreening(currentUserId);
         if (isMounted) {
           setProfile(p);
           setRecords(r);
+          setScreening(scr);
         }
       } catch (err) {
         console.error("Failed to load donor profile data", err);
@@ -113,14 +124,23 @@ export default function DonorDashboardPage() {
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">
-                Welcome back, {profile?.fullName || user?.fullName || "Alex Morgan"}
+                Welcome back, {profile?.fullName || user?.fullName || "Rahul Kumar"}
               </h1>
               <p className="text-xs sm:text-sm text-slate-600">
                 Track your voluntary donation milestones, manage emergency contact availability, and stay ready to save lives.
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                variant={screening ? "outline" : "default"}
+                size="sm"
+                onClick={() => setIsScreeningModalOpen(true)}
+                className="text-xs font-bold gap-1.5"
+              >
+                <Stethoscope className="w-3.5 h-3.5" />
+                <span>{screening ? "Medical Pre-Screening: Active" : "Complete Medical Pre-Screening"}</span>
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
@@ -131,7 +151,7 @@ export default function DonorDashboardPage() {
                 <span>Log Donation</span>
               </Button>
               <Link href="/find-blood">
-                <Button size="sm" variant="default" className="font-bold text-xs">
+                <Button size="sm" variant="outline" className="font-bold text-xs">
                   Urgent Requisitions
                 </Button>
               </Link>
@@ -234,6 +254,16 @@ export default function DonorDashboardPage() {
             />
           )}
 
+          {/* Donor Rewards & Lifesaver Milestones */}
+          {user && (
+            <DonorRewardsCard userId={user.id} />
+          )}
+
+          {/* Donation Appointments & Scheduled Slots */}
+          {user && (
+            <DonorAppointmentsCard userId={user.id} />
+          )}
+
           {/* Recent Donation Records List */}
           <RecentDonationsWidget
             records={records}
@@ -261,6 +291,18 @@ export default function DonorDashboardPage() {
             defaultBloodGroup={profile.bloodGroup}
             defaultCity={profile.city}
             onRecordCreated={handleRecordCreated}
+          />
+        )}
+
+        {/* Modal: Medical Eligibility Pre-Screening */}
+        {user && (
+          <MedicalPrescreeningDialog
+            isOpen={isScreeningModalOpen}
+            onClose={() => setIsScreeningModalOpen(false)}
+            donorId={user.id}
+            onSuccess={(result) => {
+              setScreening(result);
+            }}
           />
         )}
       </DashboardShell>

@@ -53,7 +53,7 @@ export default function NgoProfilePage() {
       setProfile(data);
       setContactPerson(data.contactPerson);
       setPhone(data.phone);
-      setCity(data.city || "New York");
+      setCity(data.city || "Bengaluru");
       setAddress(data.address || "");
       setCoverageArea(data.coverageArea);
       setWebsite(data.website || "");
@@ -197,7 +197,7 @@ export default function NgoProfilePage() {
                       </span>
                       <div className="flex items-start gap-1.5 text-slate-800 font-medium">
                         <MapPin className="w-3.5 h-3.5 text-slate-400 mt-0.5 flex-shrink-0" />
-                        <span>{profile?.address || "New York Headquarters"}</span>
+                        <span>{profile?.address || "Bengaluru Headquarters"}</span>
                       </div>
                     </div>
 

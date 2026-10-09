@@ -234,7 +234,7 @@ export default function DonorProfilePage() {
                       id="donor-full-name"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      placeholder="e.g. Alex Morgan"
+                      placeholder="e.g. Rahul Kumar"
                       required
                     />
                   </div>
@@ -323,7 +323,7 @@ export default function DonorProfilePage() {
                         id="donor-phone"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="e.g. +1 (555) 234-5678"
+                        placeholder="e.g. +91 98765 00001"
                       />
                     </div>
                   </div>
@@ -380,7 +380,7 @@ export default function DonorProfilePage() {
                         id="donor-city"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
-                        placeholder="e.g. New York"
+                        placeholder="e.g. Hyderabad"
                         required
                       />
                     </div>

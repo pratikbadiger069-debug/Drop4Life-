@@ -25,7 +25,7 @@ export function RequestFormDialog({
   onOpenChange,
   onRequestCreated,
   defaultBloodGroup = "O-",
-  defaultCity = "New York",
+  defaultCity = "Hyderabad",
 }: RequestFormDialogProps) {
   const [bloodGroup, setBloodGroup] = useState<BloodGroup>(defaultBloodGroup);
   const [unitsNeeded, setUnitsNeeded] = useState<number>(2);
@@ -35,8 +35,8 @@ export function RequestFormDialog({
   );
   const [department, setDepartment] = useState<string>("Emergency Trauma Wing");
   const [city, setCity] = useState<string>(defaultCity);
-  const [area, setArea] = useState<string>("Manhattan");
-  const [requesterPhone, setRequesterPhone] = useState<string>("+1 (555) 911-7890");
+  const [area, setArea] = useState<string>("Jubilee Hills");
+  const [requesterPhone, setRequesterPhone] = useState<string>("+91 98765 00002");
   const [clinicalNotes, setClinicalNotes] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState<boolean>(false);

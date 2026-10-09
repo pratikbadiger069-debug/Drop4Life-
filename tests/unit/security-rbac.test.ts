@@ -50,14 +50,14 @@ describe("Security Review & Server-Side RBAC Enforcement", () => {
           description: "Fake",
           venueName: "Street",
           address: "123",
-          city: "New York",
-          area: "Midtown",
+          city: "Hyderabad",
+          area: "Jubilee Hills",
           startDate: "2026-10-15",
           endDate: "2026-10-15",
           startTime: "09:00 AM",
           endTime: "05:00 PM",
           targetUnits: 100,
-          contactPhone: "+1 (555) 000-0000",
+          contactPhone: "+91 98765 00001",
           contactEmail: "donor@drop4life.org",
         })
       ).rejects.toThrow(/Access Denied/i);

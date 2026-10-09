@@ -32,17 +32,17 @@ export const DEFAULT_MOCK_REQUESTS: BloodRequest[] = [
     id: "req-001",
     referenceNumber: "REQ-2026-8801",
     hospitalId: "usr-hosp-002",
-    hospitalName: "St. Jude Medical Center",
+    hospitalName: "Apollo Hospital Jubilee Hills",
     department: "Trauma Surgery & Critical Care",
     bloodGroup: "O-",
     unitsNeeded: 3,
     unitsFulfilled: 0,
     priority: "CRITICAL",
     requiredDate: "2026-10-10",
-    city: "New York",
-    area: "Manhattan",
-    requesterName: "Dr. David Brooks",
-    requesterPhone: "+1 (555) 911-7890",
+    city: "Hyderabad",
+    area: "Jubilee Hills",
+    requesterName: "Dr. Rajesh Verma",
+    requesterPhone: "+91 98765 00002",
     requesterEmail: "hospital@drop4life.org",
     clinicalNotes: "Emergency trauma transfusion preparation. Universal O- units urgently required for immediate crossmatch.",
     status: "SUBMITTED",
@@ -50,7 +50,7 @@ export const DEFAULT_MOCK_REQUESTS: BloodRequest[] = [
       {
         status: "SUBMITTED",
         timestamp: "2026-10-09T08:30:00.000Z",
-        updatedBy: "Dr. David Brooks (St. Jude Medical Center)",
+        updatedBy: "Dr. Rajesh Verma (Apollo Hospital)",
         notes: "Initial emergency requisition submitted.",
       },
     ],
@@ -64,17 +64,17 @@ export const DEFAULT_MOCK_REQUESTS: BloodRequest[] = [
     id: "req-002",
     referenceNumber: "REQ-2026-8802",
     hospitalId: "usr-hosp-002",
-    hospitalName: "St. Jude Medical Center",
+    hospitalName: "Apollo Hospital Jubilee Hills",
     department: "Cardiovascular Operating Pavilion",
     bloodGroup: "A+",
     unitsNeeded: 4,
     unitsFulfilled: 1,
     priority: "EMERGENCY",
     requiredDate: "2026-10-11",
-    city: "New York",
-    area: "Manhattan",
-    requesterName: "Dr. David Brooks",
-    requesterPhone: "+1 (555) 345-6789",
+    city: "Hyderabad",
+    area: "Jubilee Hills",
+    requesterName: "Dr. Rajesh Verma",
+    requesterPhone: "+91 98765 00002",
     requesterEmail: "hospital@drop4life.org",
     clinicalNotes: "Scheduled bypass surgery with high risk of intraoperative blood loss. A+ or compatible red cells required.",
     status: "IN_PROGRESS",
@@ -82,7 +82,7 @@ export const DEFAULT_MOCK_REQUESTS: BloodRequest[] = [
       {
         status: "SUBMITTED",
         timestamp: "2026-10-08T14:15:00.000Z",
-        updatedBy: "Dr. David Brooks (St. Jude Medical Center)",
+        updatedBy: "Dr. Rajesh Verma (Apollo Hospital)",
         notes: "Requisition logged for operating room schedule.",
       },
       {
@@ -94,7 +94,7 @@ export const DEFAULT_MOCK_REQUESTS: BloodRequest[] = [
       {
         status: "IN_PROGRESS",
         timestamp: "2026-10-08T16:30:00.000Z",
-        updatedBy: "Dr. David Brooks",
+        updatedBy: "Dr. Rajesh Verma",
         notes: "Smart donor matching activated and candidate invitations issued.",
       },
     ],
@@ -106,14 +106,14 @@ export const DEFAULT_MOCK_REQUESTS: BloodRequest[] = [
         requestId: "req-002",
         donorId: "prof-donor-001",
         donorUserId: "usr-donor-001",
-        donorName: "Alex Morgan",
-        donorBloodGroup: "O-",
-        donorCity: "New York",
-        donorArea: "Manhattan & Brooklyn",
+        donorName: "Rahul Kumar",
+        donorBloodGroup: "O+",
+        donorCity: "Hyderabad",
+        donorArea: "Banjara Hills",
         preferredContactMethod: "SMS",
         status: "INVITED",
         invitedAt: "2026-10-08T16:30:00.000Z",
-        notes: "Automated match suggestion (Compatible O- universal donor)",
+        notes: "Automated match suggestion (Compatible O+ donor)",
       },
     ],
     createdAt: "2026-10-08T14:15:00.000Z",
@@ -123,25 +123,25 @@ export const DEFAULT_MOCK_REQUESTS: BloodRequest[] = [
     id: "req-003",
     referenceNumber: "REQ-2026-7731",
     hospitalId: "usr-hosp-003",
-    hospitalName: "Metro General Hospital",
+    hospitalName: "AIIMS New Delhi",
     department: "Pediatric Hematology",
     bloodGroup: "B-",
     unitsNeeded: 2,
     unitsFulfilled: 0,
     priority: "URGENT",
     requiredDate: "2026-10-12",
-    city: "Brooklyn",
-    area: "Downtown Brooklyn",
-    requesterName: "Dr. Sarah Jenkins",
-    requesterPhone: "+1 (555) 887-1234",
-    requesterEmail: "sjenkins@metrogeneral.org",
-    clinicalNotes: "Pediatric sickle cell transfusion protocol.",
+    city: "New Delhi",
+    area: "Ansari Nagar",
+    requesterName: "Dr. Sneha Nair",
+    requesterPhone: "+91 98765 00010",
+    requesterEmail: "bloodbank@drop4life.org",
+    clinicalNotes: "Pediatric thalassemia/sickle cell transfusion protocol.",
     status: "SUBMITTED",
     statusTimeline: [
       {
         status: "SUBMITTED",
         timestamp: "2026-10-07T09:00:00.000Z",
-        updatedBy: "Dr. Sarah Jenkins (Metro General)",
+        updatedBy: "Dr. Sneha Nair (AIIMS New Delhi)",
         notes: "Urgent pediatric requisition created.",
       },
     ],
@@ -155,17 +155,17 @@ export const DEFAULT_MOCK_REQUESTS: BloodRequest[] = [
     id: "req-004",
     referenceNumber: "REQ-2026-6510",
     hospitalId: "usr-hosp-002",
-    hospitalName: "St. Jude Medical Center",
+    hospitalName: "Apollo Hospital Jubilee Hills",
     department: "Orthopedic Surgery Wing",
     bloodGroup: "O+",
     unitsNeeded: 2,
     unitsFulfilled: 2,
     priority: "NORMAL",
     requiredDate: "2026-10-05",
-    city: "New York",
-    area: "Manhattan",
-    requesterName: "Dr. David Brooks",
-    requesterPhone: "+1 (555) 345-6789",
+    city: "Hyderabad",
+    area: "Jubilee Hills",
+    requesterName: "Dr. Rajesh Verma",
+    requesterPhone: "+91 98765 00002",
     requesterEmail: "hospital@drop4life.org",
     clinicalNotes: "Elective joint replacement surgery buffer. Successfully fulfilled from blood drive reserves.",
     status: "FULFILLED",
@@ -173,7 +173,7 @@ export const DEFAULT_MOCK_REQUESTS: BloodRequest[] = [
       {
         status: "SUBMITTED",
         timestamp: "2026-10-03T10:00:00.000Z",
-        updatedBy: "Dr. David Brooks",
+        updatedBy: "Dr. Rajesh Verma",
       },
       {
         status: "IN_PROGRESS",
@@ -183,7 +183,7 @@ export const DEFAULT_MOCK_REQUESTS: BloodRequest[] = [
       {
         status: "FULFILLED",
         timestamp: "2026-10-05T12:00:00.000Z",
-        updatedBy: "Dr. David Brooks",
+        updatedBy: "Dr. Rajesh Verma",
         notes: "2 units received and verified for transfusion.",
       },
     ],
@@ -430,7 +430,7 @@ class RequestService {
 
     const hospitalName = session.user.fullName || "Hospital Facility";
     const requesterName = input.requesterName?.trim() || session.user.fullName || "Clinical Staff";
-    const requesterPhone = input.requesterPhone?.trim() || "+1 (555) 000-0000";
+    const requesterPhone = input.requesterPhone?.trim() || "+91 98765 00002";
     const requesterEmail = input.requesterEmail?.trim() || session.user.email;
 
     const initialTimeline: RequestTimelineEvent = {
@@ -459,6 +459,79 @@ class RequestService {
       clinicalNotes: input.clinicalNotes?.trim() || undefined,
       status: "SUBMITTED",
       statusTimeline: [initialTimeline],
+      invitedDonorIds: [],
+      confirmedDonorIds: [],
+      invitations: [],
+      createdAt: now.toISOString(),
+      updatedAt: now.toISOString(),
+    };
+
+    allRequests.unshift(newRequest);
+    this.saveRequests(allRequests);
+
+    return newRequest;
+  }
+
+  /**
+   * Submits a blood requisition from any authenticated user (recipient, donor, hospital, admin) or emergency requester
+   */
+  public async submitEmergencyBloodRequest(
+    input: CreateBloodRequestInput & { hospitalName?: string; component?: BloodComponent }
+  ): Promise<BloodRequest> {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    if (!isValidBloodGroup(input.bloodGroup)) {
+      throw new Error(`Invalid blood group '${input.bloodGroup}'. Must be one of the standard 8 ABO/Rh groups.`);
+    }
+
+    if (!input.unitsNeeded || !Number.isInteger(input.unitsNeeded) || input.unitsNeeded < 1 || input.unitsNeeded > 20) {
+      throw new Error("Required blood units must be an integer between 1 and 20 units.");
+    }
+
+    if (!input.requiredDate || isNaN(Date.parse(input.requiredDate))) {
+      throw new Error("A valid required date is mandatory for blood requisitions.");
+    }
+
+    if (!input.city || input.city.trim().length === 0) {
+      throw new Error("Location city / service area is required.");
+    }
+
+    const session = authAdapter.getSession();
+    const now = new Date();
+    const hospitalName = input.hospitalName?.trim() || session?.user?.organizationName || "Apollo Hospital, Hyderabad";
+    const requesterName = input.requesterName?.trim() || session?.user?.fullName || "Emergency Requester";
+    const requesterPhone = input.requesterPhone?.trim() || "+91 98765 00000";
+    const requesterEmail = input.requesterEmail?.trim() || session?.user?.email || "requester@drop4life.org";
+
+    const allRequests = this.loadRequests();
+
+    const newRequest: BloodRequest = {
+      id: `req-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      referenceNumber: this.generateReferenceNumber(),
+      hospitalId: session?.user?.id || "req-guest",
+      hospitalName,
+      department: input.department?.trim() || "Emergency Care / Blood Bank",
+      bloodGroup: input.bloodGroup,
+      component: input.component || "rbc",
+      unitsNeeded: input.unitsNeeded,
+      unitsFulfilled: 0,
+      priority: input.priority || "URGENT",
+      requiredDate: input.requiredDate,
+      city: input.city.trim(),
+      area: input.area?.trim() || undefined,
+      requesterName,
+      requesterPhone,
+      requesterEmail,
+      clinicalNotes: input.clinicalNotes?.trim() || undefined,
+      status: "SUBMITTED",
+      statusTimeline: [
+        {
+          status: "SUBMITTED",
+          timestamp: now.toISOString(),
+          updatedBy: `${requesterName} (${hospitalName})`,
+          notes: input.clinicalNotes ? `Requisition submitted: ${input.clinicalNotes.substring(0, 100)}` : "Emergency blood requisition submitted.",
+        },
+      ],
       invitedDonorIds: [],
       confirmedDonorIds: [],
       invitations: [],

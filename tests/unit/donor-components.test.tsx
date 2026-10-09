@@ -18,9 +18,9 @@ describe("Donor UI Components", () => {
         id: donorUserId,
         email: "donor@drop4life.org",
         role: "donor",
-        fullName: "Alex Morgan",
-        bloodGroup: "O-",
-        city: "New York",
+        fullName: "Rahul Kumar",
+        bloodGroup: "O+",
+        city: "Hyderabad",
         verificationStatus: "active",
       },
       token: "tok_test_donor",
@@ -68,10 +68,10 @@ describe("Donor UI Components", () => {
       render(
         <ProfileCompletionBar
           profile={{
-            fullName: "Alex Morgan",
-            bloodGroup: "O-",
-            phone: "+15551234567",
-            city: "New York",
+            fullName: "Rahul Kumar",
+            bloodGroup: "O+",
+            phone: "+91 98765 00001",
+            city: "Hyderabad",
             profileCompletion: 80,
           }}
           showChecklist={true}
@@ -92,9 +92,9 @@ describe("Donor UI Components", () => {
         donorId: "prof-1",
         userId: donorUserId,
         donationDate: "2026-08-10",
-        facilityName: "Mount Sinai Hospital",
-        facilityCity: "New York",
-        bloodGroup: "O-",
+        facilityName: "Apollo Hospital Blood Center",
+        facilityCity: "Hyderabad",
+        bloodGroup: "O+",
         units: 1,
         donationType: "WHOLE_BLOOD",
         recordStatus: "VERIFIED",
@@ -110,7 +110,7 @@ describe("Donor UI Components", () => {
         />
       );
 
-      expect(screen.getByText("Mount Sinai Hospital")).toBeInTheDocument();
+      expect(screen.getByText("Apollo Hospital Blood Center")).toBeInTheDocument();
       expect(screen.getByText("Verified Record")).toBeInTheDocument();
       expect(screen.getByText("2026-08-10")).toBeInTheDocument();
     });
@@ -131,8 +131,8 @@ describe("Donor UI Components", () => {
           isOpen={true}
           onClose={onClose}
           userId={donorUserId}
-          defaultBloodGroup="O-"
-          defaultCity="New York"
+          defaultBloodGroup="O+"
+          defaultCity="Hyderabad"
           onRecordCreated={onRecordCreated}
         />
       );
@@ -140,8 +140,8 @@ describe("Donor UI Components", () => {
       expect(screen.getByRole("heading", { name: /Log Past Blood Donation Event/i })).toBeInTheDocument();
 
       // Enter facility name
-      const facilityInput = screen.getByPlaceholderText(/Mount Sinai Blood Center/i);
-      fireEvent.change(facilityInput, { target: { value: "City General Hospital" } });
+      const facilityInput = screen.getByPlaceholderText(/Apollo Hospital Blood Center/i);
+      fireEvent.change(facilityInput, { target: { value: "AIIMS Blood Center" } });
 
       const submitBtn = screen.getByRole("button", { name: /Save Donation Record/i });
       fireEvent.click(submitBtn);

@@ -22,7 +22,7 @@ describe("Hospital Inventory UI Components", () => {
       lowStockThreshold: 8,
       stockStatus: "CRITICAL_LOW",
       lastUpdatedAt: "2026-10-01T00:00:00Z",
-      lastUpdatedByStaffName: "Dr. David Brooks",
+      lastUpdatedByStaffName: "Dr. Rajesh Verma",
     },
     {
       hospitalId: hospitalUserId,
@@ -34,7 +34,7 @@ describe("Hospital Inventory UI Components", () => {
       lowStockThreshold: 10,
       stockStatus: "ADEQUATE",
       lastUpdatedAt: "2026-10-01T00:00:00Z",
-      lastUpdatedByStaffName: "Dr. David Brooks",
+      lastUpdatedByStaffName: "Dr. Rajesh Verma",
     },
   ];
 
@@ -53,7 +53,7 @@ describe("Hospital Inventory UI Components", () => {
       previousExpired: 0,
       newExpired: 0,
       staffId: hospitalUserId,
-      staffName: "Dr. David Brooks",
+      staffName: "Dr. Rajesh Verma",
       notes: "Emergency dispatch to Trauma Bay",
       timestamp: "2026-10-08T19:40:00Z",
     },
@@ -66,9 +66,9 @@ describe("Hospital Inventory UI Components", () => {
         id: hospitalUserId,
         email: "hospital@drop4life.org",
         role: "hospital",
-        fullName: "Dr. David Brooks",
-        organizationName: "St. Jude Medical Center",
-        city: "New York",
+        fullName: "Dr. Rajesh Verma",
+        organizationName: "Apollo Hospital Jubilee Hills",
+        city: "Hyderabad",
         verificationStatus: "verified",
       },
       token: "tok_test_hospital",
@@ -127,7 +127,7 @@ describe("Hospital Inventory UI Components", () => {
           onClose={onClose}
           hospitalId={hospitalUserId}
           item={mockInventory[0]}
-          staffName="Dr. David Brooks"
+          staffName="Dr. Rajesh Verma"
           onSuccess={onSuccess}
         />
       );
@@ -156,7 +156,7 @@ describe("Hospital Inventory UI Components", () => {
 
       expect(screen.getByText(/Inventory Transaction & Audit Trail/i)).toBeInTheDocument();
       expect(screen.getByText("Transfusion Dispatch")).toBeInTheDocument();
-      expect(screen.getByText("Dr. David Brooks")).toBeInTheDocument();
+      expect(screen.getByText("Dr. Rajesh Verma")).toBeInTheDocument();
     });
   });
 });

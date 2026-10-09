@@ -28,7 +28,7 @@ import {
 export default function HospitalDonorsRadarPage() {
   const { user } = useAuth();
   const [selectedBloodGroup, setSelectedBloodGroup] = useState<BloodGroup>("O-");
-  const [selectedCity, setSelectedCity] = useState<string>("New York");
+  const [selectedCity, setSelectedCity] = useState<string>("Hyderabad");
   const [selectedArea, setSelectedArea] = useState<string>("");
 
   const donorPool = matchingService.getDonorPool();
@@ -143,7 +143,7 @@ export default function HospitalDonorsRadarPage() {
                     type="text"
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
-                    placeholder="e.g. New York, Brooklyn"
+                    placeholder="e.g. Hyderabad, Bengaluru"
                     className="w-full h-10 rounded-md border border-slate-300 bg-white px-3 text-sm focus:border-red-500 focus:outline-none"
                   />
                 </div>
@@ -151,13 +151,13 @@ export default function HospitalDonorsRadarPage() {
                 {/* Target Neighborhood */}
                 <div>
                   <label className="text-xs font-bold text-slate-700 block mb-1">
-                    Neighborhood / Borough (Optional)
+                    Neighborhood / Area (Optional)
                   </label>
                   <input
                     type="text"
                     value={selectedArea}
                     onChange={(e) => setSelectedArea(e.target.value)}
-                    placeholder="e.g. Manhattan"
+                    placeholder="e.g. Jubilee Hills, Banjara Hills"
                     className="w-full h-10 rounded-md border border-slate-300 bg-white px-3 text-sm focus:border-red-500 focus:outline-none"
                   />
                 </div>

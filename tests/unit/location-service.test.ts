@@ -20,29 +20,29 @@ describe("Location & Facility Discovery Service", () => {
     const bloodBanks = await locationService.getFacilities({ facilityType: "BLOOD_BANK" });
     expect(bloodBanks.every((f) => f.facilityType === "BLOOD_BANK")).toBe(true);
 
-    const searchResults = await locationService.getFacilities({ search: "Brooklyn" });
+    const searchResults = await locationService.getFacilities({ search: "Bengaluru" });
     expect(searchResults.length).toBeGreaterThan(0);
     expect(
       searchResults.every(
         (f) =>
-          f.city.toLowerCase().includes("brooklyn") ||
-          f.name.toLowerCase().includes("brooklyn") ||
-          f.address.toLowerCase().includes("brooklyn")
+          f.city.toLowerCase().includes("bengaluru") ||
+          f.name.toLowerCase().includes("bengaluru") ||
+          f.address.toLowerCase().includes("bengaluru")
       )
     ).toBe(true);
   });
 
   it("accurately calculates Haversine distance in kilometers", () => {
-    // New York Midtown (40.7484, -73.9857) to Downtown Brooklyn (40.6934, -73.9858) ~ 6.1 km
-    const dist = calculateDistanceKm(40.7484, -73.9857, 40.6934, -73.9858);
-    expect(dist).toBeGreaterThan(5.5);
-    expect(dist).toBeLessThan(7.0);
+    // Hyderabad Jubilee Hills (17.4265, 78.4112) to Charminar (17.3616, 78.4747) ~ 9.8 km
+    const dist = calculateDistanceKm(17.4265, 78.4112, 17.3616, 78.4747);
+    expect(dist).toBeGreaterThan(8.5);
+    expect(dist).toBeLessThan(11.0);
   });
 
   it("sorts facilities by proximity from user coordinates", async () => {
-    // Coordinates near Central Manhattan (40.7831, -73.9712)
+    // Coordinates near Central Hyderabad (17.3850, 78.4867)
     const sorted = await locationService.getFacilities({
-      userCoord: { latitude: 40.7831, longitude: -73.9712 },
+      userCoord: { latitude: 17.3850, longitude: 78.4867 },
     });
 
     expect(sorted[0].distanceKm).toBeDefined();
@@ -54,12 +54,12 @@ describe("Location & Facility Discovery Service", () => {
   });
 
   it("generates valid navigation direction URLs without exposing private tokens", () => {
-    const gmapsUrl = locationService.getDirectionsUrl("Metro General Hospital", {
-      latitude: 40.7484,
-      longitude: -73.9857,
+    const gmapsUrl = locationService.getDirectionsUrl("Apollo Hospital Jubilee Hills", {
+      latitude: 17.4265,
+      longitude: 78.4112,
     });
     expect(gmapsUrl).toContain("https://www.google.com/maps/dir/");
-    expect(gmapsUrl).toContain("40.7484,-73.9857");
+    expect(gmapsUrl).toContain("17.4265,78.4112");
   });
 
   it("enforces location privacy: only public and authorized facility locations are listed", async () => {

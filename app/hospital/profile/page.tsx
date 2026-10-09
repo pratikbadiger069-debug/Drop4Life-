@@ -289,7 +289,7 @@ export default function HospitalProfilePage() {
                         id="hosp-phone"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="e.g. +1 (555) 345-6789"
+                        placeholder="e.g. +91 98765 00002"
                       />
                     </div>
 
@@ -301,7 +301,7 @@ export default function HospitalProfilePage() {
                         id="hosp-emergency-phone"
                         value={emergencyPhone}
                         onChange={(e) => setEmergencyPhone(e.target.value)}
-                        placeholder="e.g. +1 (555) 911-7890"
+                        placeholder="e.g. +91 40 2360 7777"
                         required
                       />
                     </div>

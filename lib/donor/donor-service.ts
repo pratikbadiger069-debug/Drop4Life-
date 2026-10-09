@@ -18,12 +18,18 @@ import {
   DonationType,
   DonationRecordStatus,
   BloodGroup,
+  DonorBadgeLevel,
+  DonorBadge,
+  DonorAchievementSummary,
+  AppointmentRecord,
 } from "@/lib/types";
 import { authAdapter } from "@/lib/auth/auth-adapter";
 import { isValidBloodGroup } from "@/lib/blood-compatibility";
+import { DONOR_REWARD_TIERS } from "@/lib/constants";
 
 const DONOR_PROFILES_STORAGE_KEY = "drop4life_donor_profiles";
 const DONATION_HISTORY_STORAGE_KEY = "drop4life_donation_history";
+const APPOINTMENTS_STORAGE_KEY = "drop4life_donor_appointments";
 
 /**
  * Calculates profile completion percentage based on completeness of essential fields.
@@ -42,23 +48,23 @@ export function calculateProfileCompletion(profile: Partial<DonorProfile>): numb
 }
 
 /**
- * Default seeded donor profile for the primary demo account
+ * Default seeded donor profile for the primary demo account (Indian Context)
  */
 const DEFAULT_DEMO_DONOR_PROFILE: DonorProfile = {
   id: "prof-donor-001",
   userId: "usr-donor-001",
-  fullName: "Alex Morgan",
+  fullName: "Rahul Kumar",
   email: "donor@drop4life.org",
   bloodGroup: "O-",
-  phone: "+1 (555) 234-5678",
+  phone: "+91 98765 00001",
   phoneVerified: true,
   emailVerified: true,
-  city: "New York",
-  area: "Manhattan & Brooklyn",
-  address: "350 5th Avenue, Suite 1200",
-  dateOfBirth: "1994-06-15",
+  city: "Hyderabad",
+  area: "Banjara Hills & Jubilee Hills",
+  address: "Plot 42, Road No. 12, Banjara Hills, Hyderabad, Telangana 500034",
+  dateOfBirth: "1995-08-15",
   availabilityStatus: "AVAILABLE",
-  preferredLocation: "Manhattan Central Hospital Blood Center",
+  preferredLocation: "Nizam's Institute of Medical Sciences (NIMS) Blood Bank, Hyderabad",
   preferredContactMethod: "SMS",
   availabilityNotes: "Available weekdays after 5:00 PM and weekends anytime for emergency calls.",
   lastDonatedAt: "2026-08-10",
@@ -77,13 +83,13 @@ const DEFAULT_DONATION_RECORDS: DonationRecord[] = [
     donorId: "prof-donor-001",
     userId: "usr-donor-001",
     donationDate: "2026-08-10",
-    facilityName: "Mount Sinai Hospital Blood Bank",
-    facilityCity: "New York",
+    facilityName: "Nizam's Institute of Medical Sciences (NIMS) Blood Bank",
+    facilityCity: "Hyderabad",
     bloodGroup: "O-",
     units: 1,
     donationType: "WHOLE_BLOOD",
     recordStatus: "VERIFIED",
-    referenceNumber: "MSH-2026-8831",
+    referenceNumber: "NIMS-2026-8831",
     notes: "Post-donation recovery normal. Routine 56-day rest cycle completed.",
     createdAt: "2026-08-10T14:30:00Z",
   },
@@ -92,13 +98,13 @@ const DEFAULT_DONATION_RECORDS: DonationRecord[] = [
     donorId: "prof-donor-001",
     userId: "usr-donor-001",
     donationDate: "2026-05-02",
-    facilityName: "NY Presbyterian Blood Center",
-    facilityCity: "New York",
+    facilityName: "Apollo Hospital Blood Center, Jubilee Hills",
+    facilityCity: "Hyderabad",
     bloodGroup: "O-",
     units: 1,
     donationType: "WHOLE_BLOOD",
     recordStatus: "VERIFIED",
-    referenceNumber: "NYP-2026-4412",
+    referenceNumber: "APOLLO-2026-4412",
     notes: "Emergency surgical drive participation.",
     createdAt: "2026-05-02T11:15:00Z",
   },
@@ -107,14 +113,14 @@ const DEFAULT_DONATION_RECORDS: DonationRecord[] = [
     donorId: "prof-donor-001",
     userId: "usr-donor-001",
     donationDate: "2026-01-14",
-    facilityName: "Community Health Mobile Blood Drive",
-    facilityCity: "Brooklyn",
+    facilityName: "Red Cross Society Blood Bank",
+    facilityCity: "Hyderabad",
     bloodGroup: "O-",
     units: 1,
     donationType: "WHOLE_BLOOD",
-    recordStatus: "SELF_REPORTED",
-    referenceNumber: "COMM-SELF-019",
-    notes: "Self-logged record from neighborhood mobile drive.",
+    recordStatus: "VERIFIED",
+    referenceNumber: "RC-HYD-2026-019",
+    notes: "Verified donation from regional mobile camp.",
     createdAt: "2026-01-14T16:45:00Z",
   },
 ];
@@ -174,11 +180,11 @@ class DonorService {
         userId,
         fullName: session?.user.fullName || "Volunteer Donor",
         email: session?.user.email || "",
-        bloodGroup: session?.user.bloodGroup || "O-",
-        phone: "+1 (555) 000-0000",
+        bloodGroup: session?.user.bloodGroup || "O+",
+        phone: "+91 98765 00001",
         phoneVerified: false,
         emailVerified: true,
-        city: session?.user.city || "New York",
+        city: session?.user.city || "Hyderabad",
         area: "",
         availabilityStatus: "AVAILABLE",
         preferredContactMethod: "EMAIL",
@@ -388,6 +394,177 @@ class DonorService {
     }
 
     return newRecord;
+  }
+
+  /**
+   * Retrieves donor reward achievements based strictly on verified donation records.
+   * Prevents unverified or self-reported records from claiming badges.
+   */
+  public async getDonorAchievements(userId: string): Promise<DonorAchievementSummary> {
+    const history = await this.getDonationHistory(userId);
+    // Filter strictly verified records
+    const verifiedHistory = history.filter((h) => h.recordStatus === "VERIFIED");
+    const count = verifiedHistory.length;
+
+    const bronzeUnlocked = count >= DONOR_REWARD_TIERS.BRONZE.threshold;
+    const silverUnlocked = count >= DONOR_REWARD_TIERS.SILVER.threshold;
+    const goldUnlocked = count >= DONOR_REWARD_TIERS.GOLD.threshold;
+    const platinumUnlocked = count >= DONOR_REWARD_TIERS.PLATINUM.threshold;
+
+    let currentLevel: DonorBadgeLevel = "NONE";
+    let badgeTitle = "Novice Donor";
+    let nextThreshold = DONOR_REWARD_TIERS.BRONZE.threshold;
+
+    if (platinumUnlocked) {
+      currentLevel = "PLATINUM";
+      badgeTitle = DONOR_REWARD_TIERS.PLATINUM.name;
+      nextThreshold = 20;
+    } else if (goldUnlocked) {
+      currentLevel = "GOLD";
+      badgeTitle = DONOR_REWARD_TIERS.GOLD.name;
+      nextThreshold = DONOR_REWARD_TIERS.PLATINUM.threshold;
+    } else if (silverUnlocked) {
+      currentLevel = "SILVER";
+      badgeTitle = DONOR_REWARD_TIERS.SILVER.name;
+      nextThreshold = DONOR_REWARD_TIERS.GOLD.threshold;
+    } else if (bronzeUnlocked) {
+      currentLevel = "BRONZE";
+      badgeTitle = DONOR_REWARD_TIERS.BRONZE.name;
+      nextThreshold = DONOR_REWARD_TIERS.SILVER.threshold;
+    }
+
+    const progressPercent = Math.min(100, Math.round((count / nextThreshold) * 100));
+
+    const badges: DonorBadge[] = [
+      {
+        id: "badge-bronze",
+        level: "BRONZE",
+        name: DONOR_REWARD_TIERS.BRONZE.name,
+        description: DONOR_REWARD_TIERS.BRONZE.description,
+        icon: "🥉",
+        thresholdDonations: DONOR_REWARD_TIERS.BRONZE.threshold,
+        isUnlocked: bronzeUnlocked,
+      },
+      {
+        id: "badge-silver",
+        level: "SILVER",
+        name: DONOR_REWARD_TIERS.SILVER.name,
+        description: DONOR_REWARD_TIERS.SILVER.description,
+        icon: "🥈",
+        thresholdDonations: DONOR_REWARD_TIERS.SILVER.threshold,
+        isUnlocked: silverUnlocked,
+      },
+      {
+        id: "badge-gold",
+        level: "GOLD",
+        name: DONOR_REWARD_TIERS.GOLD.name,
+        description: DONOR_REWARD_TIERS.GOLD.description,
+        icon: "🥇",
+        thresholdDonations: DONOR_REWARD_TIERS.GOLD.threshold,
+        isUnlocked: goldUnlocked,
+      },
+      {
+        id: "badge-platinum",
+        level: "PLATINUM",
+        name: DONOR_REWARD_TIERS.PLATINUM.name,
+        description: DONOR_REWARD_TIERS.PLATINUM.description,
+        icon: "💎",
+        thresholdDonations: DONOR_REWARD_TIERS.PLATINUM.threshold,
+        isUnlocked: platinumUnlocked,
+      },
+    ];
+
+    return {
+      currentLevel,
+      badgeTitle,
+      verifiedDonationsCount: count,
+      nextLevelThreshold: nextThreshold,
+      progressPercent,
+      badges,
+    };
+  }
+
+  /**
+   * Retrieves appointments booked by the donor
+   */
+  public async getAppointments(userId: string): Promise<AppointmentRecord[]> {
+    this.assertAuthorizedUser(userId);
+    await new Promise((res) => setTimeout(res, 60));
+    if (!this.isClient()) return [];
+    try {
+      const stored = localStorage.getItem(APPOINTMENTS_STORAGE_KEY);
+      const all: AppointmentRecord[] = stored ? JSON.parse(stored) : [];
+      return all.filter((a) => a.donorId === userId);
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Schedules a blood donation appointment
+   */
+  public async bookAppointment(
+    userId: string,
+    input: {
+      facilityId: string;
+      facilityName: string;
+      facilityType: "HOSPITAL" | "BLOOD_BANK" | "CAMPAIGN";
+      city: string;
+      date: string;
+      timeSlot: string;
+      notes?: string;
+    }
+  ): Promise<AppointmentRecord> {
+    this.assertAuthorizedUser(userId);
+    await new Promise((res) => setTimeout(res, 100));
+
+    const profile = await this.getDonorProfile(userId);
+    const newAppointment: AppointmentRecord = {
+      id: `apt-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      donorId: userId,
+      donorName: profile.fullName,
+      donorBloodGroup: profile.bloodGroup,
+      facilityId: input.facilityId,
+      facilityName: input.facilityName,
+      facilityType: input.facilityType,
+      city: input.city,
+      date: input.date,
+      timeSlot: input.timeSlot,
+      status: "SCHEDULED",
+      notes: input.notes?.trim(),
+      createdAt: new Date().toISOString(),
+    };
+
+    if (this.isClient()) {
+      try {
+        const stored = localStorage.getItem(APPOINTMENTS_STORAGE_KEY);
+        const all: AppointmentRecord[] = stored ? JSON.parse(stored) : [];
+        all.unshift(newAppointment);
+        localStorage.setItem(APPOINTMENTS_STORAGE_KEY, JSON.stringify(all));
+      } catch (e) {
+        console.warn("Failed to persist appointment", e);
+      }
+    }
+
+    return newAppointment;
+  }
+
+  /**
+   * Cancels an existing appointment
+   */
+  public async cancelAppointment(userId: string, appointmentId: string): Promise<AppointmentRecord> {
+    this.assertAuthorizedUser(userId);
+    await new Promise((res) => setTimeout(res, 100));
+
+    if (!this.isClient()) throw new Error("Client storage unavailable");
+    const stored = localStorage.getItem(APPOINTMENTS_STORAGE_KEY);
+    const all: AppointmentRecord[] = stored ? JSON.parse(stored) : [];
+    const index = all.findIndex((a) => a.id === appointmentId && a.donorId === userId);
+    if (index === -1) throw new Error("Appointment not found.");
+
+    all[index].status = "CANCELLED";
+    localStorage.setItem(APPOINTMENTS_STORAGE_KEY, JSON.stringify(all));
+    return all[index];
   }
 }
 

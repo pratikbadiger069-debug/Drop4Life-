@@ -2,7 +2,9 @@
  * Drop4Life Domain & UI Type Definitions
  */
 
-export type UserRole = "donor" | "hospital" | "ngo" | "admin";
+export type UserRole = "donor" | "hospital" | "ngo" | "admin" | "recipient" | "bloodbank";
+
+export type BloodComponent = "rbc" | "plasma" | "platelets";
 
 export type BloodGroup = "O-" | "O+" | "A-" | "A+" | "B-" | "B+" | "AB-" | "AB+";
 
@@ -57,6 +59,7 @@ export interface BloodRequest {
   hospitalName: string;
   department: string;
   bloodGroup: BloodGroup;
+  component?: BloodComponent;
   unitsNeeded: number;
   unitsFulfilled: number;
   priority: RequestPriority;
@@ -454,4 +457,99 @@ export interface AdminAnalyticsReport {
   };
   breakdownByBloodGroup?: Record<BloodGroup, { availableUnits: number; requestedUnits: number }>;
 }
+
+/**
+ * Medical Eligibility Pre-Screening Types
+ */
+export interface MedicalPreScreeningResponse {
+  id: string;
+  donorId: string;
+  weightKg: number;
+  weightEligible: boolean; // Weight >= 45 kg (standard Indian NACO/NBTC guideline)
+  hasRecentTravel: boolean; // International or malaria-endemic travel in past 6 months
+  travelDetails?: string;
+  hasRecentTattooOrPiercing: boolean; // Tattoos or body piercing within past 6-12 months
+  hemoglobinKnown: boolean;
+  hemoglobinLevel?: number; // Standard >= 12.5 g/dL
+  currentMedications: string; // List of medications or "None"
+  takingHighRiskMedications: boolean; // Antibiotics, anticoagulants, etc.
+  requiresProfessionalReview: boolean;
+  reviewFlags: string[];
+  completedAt: string;
+  disclaimerAcknowledged: boolean;
+}
+
+/**
+ * Donor Rewards & Social Impact Types
+ */
+export type DonorBadgeLevel = "NONE" | "BRONZE" | "SILVER" | "GOLD" | "PLATINUM";
+
+export interface DonorBadge {
+  id: string;
+  level: DonorBadgeLevel;
+  name: string;
+  description: string;
+  icon: string;
+  thresholdDonations: number;
+  isUnlocked: boolean;
+  unlockedAt?: string;
+}
+
+export interface DonorAchievementSummary {
+  currentLevel: DonorBadgeLevel;
+  badgeTitle: string;
+  verifiedDonationsCount: number;
+  nextLevelThreshold: number;
+  progressPercent: number;
+  badges: DonorBadge[];
+}
+
+/**
+ * Appointment Booking & Scheduling Types
+ */
+export interface AppointmentRecord {
+  id: string;
+  donorId: string;
+  donorName: string;
+  donorBloodGroup: BloodGroup;
+  facilityId: string;
+  facilityName: string;
+  facilityType: "HOSPITAL" | "BLOOD_BANK" | "CAMPAIGN";
+  city: string;
+  date: string;
+  timeSlot: string;
+  status: "SCHEDULED" | "COMPLETED" | "CANCELLED" | "NO_SHOW";
+  notes?: string;
+  createdAt: string;
+}
+
+/**
+ * Identity & OTP Verification Details
+ */
+export interface IdentityVerificationDetails {
+  phoneVerified: boolean;
+  phoneVerifiedAt?: string;
+  emailVerified: boolean;
+  emailVerifiedAt?: string;
+  idType?: "AADHAAR" | "ABHA" | "NONE";
+  idMaskedNumber?: string; // Fictional masked format e.g. "XXXX-XXXX-1234"
+  isSimulatedDemo: boolean;
+  verifiedAt?: string;
+}
+
+/**
+ * Secure In-App Communication
+ */
+export interface InAppChatMessage {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderName: string;
+  senderRole: UserRole;
+  recipientId: string;
+  content: string;
+  timestamp: string;
+  isRead: boolean;
+}
+
 

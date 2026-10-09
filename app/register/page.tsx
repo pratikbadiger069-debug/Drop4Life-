@@ -344,7 +344,7 @@ function RegisterContent() {
 
                   <Input
                     label="City / General Region"
-                    placeholder="New York, NY"
+                    placeholder="Hyderabad, Telangana"
                     value={donorCity}
                     onChange={(e) => setDonorCity(e.target.value)}
                     error={formErrors.donorCity}
@@ -355,7 +355,7 @@ function RegisterContent() {
 
                 <Input
                   label="Contact Phone (Optional)"
-                  placeholder="+1 (555) 019-2834"
+                  placeholder="+91 98765 00001"
                   value={donorPhone}
                   onChange={(e) => setDonorPhone(e.target.value)}
                   helperText="Never made public; only shared with hospital staff upon accepting a request."
@@ -378,7 +378,7 @@ function RegisterContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     label="Hospital / Medical Center Name"
-                    placeholder="Metro General Hospital"
+                    placeholder="Apollo Hospital Jubilee Hills"
                     value={hospitalName}
                     onChange={(e) => setHospitalName(e.target.value)}
                     error={formErrors.hospitalName}
@@ -387,7 +387,7 @@ function RegisterContent() {
 
                   <Input
                     label="Medical Facility License ID"
-                    placeholder="LIC-MED-849201"
+                    placeholder="TS-MED-849201"
                     value={hospitalLicense}
                     onChange={(e) => setHospitalLicense(e.target.value)}
                     error={formErrors.hospitalLicense}
@@ -408,7 +408,7 @@ function RegisterContent() {
 
                   <Input
                     label="Authorized Contact Person"
-                    placeholder="Dr. David Brooks"
+                    placeholder="Dr. Rajesh Verma"
                     value={hospitalContact}
                     onChange={(e) => setHospitalContact(e.target.value)}
                     error={formErrors.hospitalContact}
@@ -420,7 +420,7 @@ function RegisterContent() {
                   <Input
                     label="Official Work Email"
                     type="email"
-                    placeholder="bloodbank@metrogeneral.org"
+                    placeholder="bloodbank@apollo-hyd.org"
                     value={hospitalEmail}
                     onChange={(e) => setHospitalEmail(e.target.value)}
                     error={formErrors.hospitalEmail}
@@ -429,7 +429,7 @@ function RegisterContent() {
 
                   <Input
                     label="Emergency Line Phone"
-                    placeholder="+1 (555) 012-3456"
+                    placeholder="+91 98765 00002"
                     value={hospitalPhone}
                     onChange={(e) => setHospitalPhone(e.target.value)}
                     error={formErrors.hospitalPhone}
@@ -440,7 +440,7 @@ function RegisterContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     label="City"
-                    placeholder="New York"
+                    placeholder="Hyderabad"
                     value={hospitalCity}
                     onChange={(e) => setHospitalCity(e.target.value)}
                     error={formErrors.hospitalCity}
@@ -449,7 +449,7 @@ function RegisterContent() {
 
                   <Input
                     label="Full Facility Address"
-                    placeholder="500 Medical Center Blvd, Suite 100"
+                    placeholder="Road No. 72, Jubilee Hills"
                     value={hospitalAddress}
                     onChange={(e) => setHospitalAddress(e.target.value)}
                     error={formErrors.hospitalAddress}
@@ -472,7 +472,7 @@ function RegisterContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     label="NGO / Organization Name"
-                    placeholder="Red Cross Community Chapter"
+                    placeholder="Youth Red Cross Society & Lifeline"
                     value={ngoName}
                     onChange={(e) => setNgoName(e.target.value)}
                     error={formErrors.ngoName}
@@ -481,7 +481,7 @@ function RegisterContent() {
 
                   <Input
                     label="NGO Registration / Tax ID"
-                    placeholder="NGO-REG-994821"
+                    placeholder="KA-NGO-994821"
                     value={ngoRegId}
                     onChange={(e) => setNgoRegId(e.target.value)}
                     error={formErrors.ngoRegId}
@@ -492,7 +492,7 @@ function RegisterContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     label="Authorized Coordinator Name"
-                    placeholder="Elena Vance"
+                    placeholder="Priya Reddy"
                     value={ngoContact}
                     onChange={(e) => setNgoContact(e.target.value)}
                     error={formErrors.ngoContact}
@@ -502,7 +502,7 @@ function RegisterContent() {
                   <Input
                     label="Official NGO Email"
                     type="email"
-                    placeholder="coordinator@redcross-chapter.org"
+                    placeholder="coordinator@redcross-lifeline.org"
                     value={ngoEmail}
                     onChange={(e) => setNgoEmail(e.target.value)}
                     error={formErrors.ngoEmail}
@@ -513,7 +513,7 @@ function RegisterContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     label="Contact Phone"
-                    placeholder="+1 (555) 987-6543"
+                    placeholder="+91 98765 00003"
                     value={ngoPhone}
                     onChange={(e) => setNgoPhone(e.target.value)}
                     error={formErrors.ngoPhone}
@@ -522,7 +522,7 @@ function RegisterContent() {
 
                   <Input
                     label="City / Headquarters"
-                    placeholder="Brooklyn, NY"
+                    placeholder="Bengaluru, KA"
                     value={ngoCity}
                     onChange={(e) => setNgoCity(e.target.value)}
                     error={formErrors.ngoCity}
@@ -532,7 +532,7 @@ function RegisterContent() {
 
                 <Input
                   label="Regional Coverage Area"
-                  placeholder="Tri-State Metro Area"
+                  placeholder="Bengaluru Urban & Rural"
                   value={ngoCoverage}
                   onChange={(e) => setNgoCoverage(e.target.value)}
                   error={formErrors.ngoCoverage}
