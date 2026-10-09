@@ -7,12 +7,14 @@ import { BrandLogo } from "@/components/branding/brand-logo";
 import { PUBLIC_NAV_ITEMS, APP_CONFIG } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, PhoneCall, ShieldAlert } from "lucide-react";
+import { useAuth } from "@/lib/auth/auth-context";
+import { Menu, X, PhoneCall, ShieldAlert, LogOut, LayoutDashboard, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout, getDashboardRouteForRole } = useAuth();
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
@@ -84,16 +86,38 @@ export function Header() {
 
           {/* Auth & Role Access CTA buttons */}
           <div className="hidden sm:flex items-center space-x-2">
-            <Link href="/login">
-              <Button variant="outline" size="sm" className="font-semibold text-slate-800">
-                Log In
-              </Button>
-            </Link>
-            <Link href="/register/donor">
-              <Button variant="default" size="sm" className="font-semibold shadow-sm">
-                Become a Donor
-              </Button>
-            </Link>
+            {isAuthenticated && user ? (
+              <div className="flex items-center gap-2">
+                <Link href={getDashboardRouteForRole(user.role)}>
+                  <Button variant="outline" size="sm" className="font-semibold text-slate-800 gap-1.5">
+                    <LayoutDashboard className="w-3.5 h-3.5 text-primary" />
+                    <span>Dashboard ({user.role})</span>
+                  </Button>
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={logout}
+                  className="text-xs text-slate-500 hover:text-red-700"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span className="sr-only">Sign out</span>
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="outline" size="sm" className="font-semibold text-slate-800">
+                    Log In
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button variant="default" size="sm" className="font-semibold shadow-sm">
+                    Register
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -144,16 +168,43 @@ export function Header() {
           </div>
 
           <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
-            <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="outline" className="w-full justify-center">
-                Log In
-              </Button>
-            </Link>
-            <Link href="/register/donor" onClick={() => setMobileMenuOpen(false)}>
-              <Button variant="default" className="w-full justify-center">
-                Become a Donor
-              </Button>
-            </Link>
+            {isAuthenticated && user ? (
+              <>
+                <Link
+                  href={getDashboardRouteForRole(user.role)}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Button variant="default" className="w-full justify-center gap-1.5">
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span>Go to {user.role.toUpperCase()} Dashboard</span>
+                  </Button>
+                </Link>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full justify-center gap-1.5 text-red-700"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out</span>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="outline" className="w-full justify-center">
+                    Log In
+                  </Button>
+                </Link>
+                <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="default" className="w-full justify-center">
+                    Register
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
