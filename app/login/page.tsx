@@ -97,7 +97,7 @@ function LoginForm() {
               <span className="font-bold text-slate-900">Demo Accounts (Instant Testing):</span>
               <span className="text-[10px] text-muted-foreground">Click to Autofill</span>
             </div>
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
               <button
                 type="button"
                 onClick={() => handleQuickDemo("donor@drop4life.org", "DonorPass123!")}
@@ -121,6 +121,14 @@ function LoginForm() {
               >
                 <Building2 className="w-3 h-3" />
                 <span>NGO</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickDemo("admin@drop4life.org", "AdminPass123!")}
+                className="p-1.5 rounded-lg border border-indigo-200 bg-white hover:bg-indigo-100 text-[11px] font-semibold text-indigo-900 flex items-center justify-center gap-1 transition-colors"
+              >
+                <Lock className="w-3 h-3" />
+                <span>Admin</span>
               </button>
             </div>
           </div>

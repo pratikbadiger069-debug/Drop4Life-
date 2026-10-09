@@ -357,3 +357,101 @@ export interface NavItem {
   icon?: string;
   badge?: string;
 }
+
+/**
+ * Phase 9 — Admin, Analytics, Audit Trail, and User Management
+ */
+export type AuditActionType =
+  | "INVENTORY_CHANGE"
+  | "REQUEST_STATUS_CHANGE"
+  | "VERIFICATION_DECISION"
+  | "USER_STATUS_CHANGE"
+  | "ORGANIZATION_STATUS_CHANGE"
+  | "REPORT_EXPORTED"
+  | "CAMPAIGN_CANCELLED_BY_ADMIN"
+  | "SECURITY_EVENT";
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  actorId: string;
+  actorRole: UserRole;
+  actorName: string;
+  actorEmail?: string;
+  action: AuditActionType;
+  targetType: "HOSPITAL" | "NGO" | "ORGANIZATION" | "DONOR" | "REQUEST" | "CAMPAIGN" | "INVENTORY" | "USER" | "SYSTEM";
+  targetId: string;
+  targetName?: string;
+  details: string;
+  metadata?: Record<string, any>;
+  ipAddress?: string;
+}
+
+export interface AdminDashboardMetrics {
+  totalDonors: number;
+  totalHospitals: number;
+  totalNgos: number;
+  totalUsers: number;
+  openRequests: number;
+  fulfilledRequests: number;
+  activeCampaigns: number;
+  totalCampaigns: number;
+  totalAvailableUnits: number;
+  criticalStockGroups: number;
+  pendingVerifications: number;
+  lastCalculatedAt: string;
+}
+
+export interface OrganizationVerificationItem {
+  id: string;
+  userId: string;
+  name: string;
+  type: "hospital" | "ngo";
+  contactPerson: string;
+  email: string;
+  phone: string;
+  city: string;
+  licenseOrRegId: string;
+  verificationStatus: "verified" | "pending" | "rejected";
+  submittedAt: string;
+  reviewedAt?: string;
+  reviewedBy?: string;
+  rejectionReason?: string;
+}
+
+export interface ManagedUserRecord {
+  id: string;
+  email: string;
+  fullName: string;
+  role: UserRole;
+  status: "active" | "suspended";
+  verificationStatus?: "active" | "pending" | "verified" | "rejected";
+  city?: string;
+  organizationName?: string;
+  bloodGroup?: BloodGroup;
+  createdAt: string;
+  lastActiveAt?: string;
+}
+
+export interface AdminAnalyticsReport {
+  generatedAt: string;
+  dateRange: {
+    startDate?: string;
+    endDate?: string;
+  };
+  reportType: "OVERVIEW" | "REQUESTS" | "INVENTORY" | "VERIFICATIONS" | "CAMPAIGNS";
+  summary: {
+    totalRequests: number;
+    fulfilledCount: number;
+    fulfillmentRate: number;
+    totalUnitsRequested: number;
+    totalUnitsFulfilled: number;
+    totalCampaigns: number;
+    totalVolunteersPledged: number;
+    totalVerifiedOrgs: number;
+    pendingVerifications: number;
+    currentAvailableBloodUnits: number;
+  };
+  breakdownByBloodGroup?: Record<BloodGroup, { availableUnits: number; requestedUnits: number }>;
+}
+

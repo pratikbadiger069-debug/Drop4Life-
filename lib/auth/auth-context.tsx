@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       case "ngo":
         return "/ngo/dashboard";
       case "admin":
-        return "/hospital/dashboard";
+        return "/admin/dashboard";
       default:
         return "/login";
     }

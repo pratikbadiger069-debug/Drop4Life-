@@ -30,7 +30,7 @@ export default function UnauthorizedPage() {
           </h1>
 
           <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
-            You do not have permission to access this portal resource. Drop4Life enforces strict role-based isolation between Donors, Hospital Providers, and NGO Coordinators.
+            You do not have permission to access this portal resource. Drop4Life enforces strict role-based isolation between Donors, Hospital Providers, NGO Coordinators, and Platform Administrators.
           </p>
 
           <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">

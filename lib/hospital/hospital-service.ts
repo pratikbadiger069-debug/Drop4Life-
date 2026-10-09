@@ -314,6 +314,14 @@ class HospitalService {
   }
 
   /**
+   * Alias for getBloodInventory
+   */
+  public async getInventory(hospitalIdOrUserId: string): Promise<BloodInventoryItem[]> {
+    return this.getBloodInventory(hospitalIdOrUserId);
+  }
+
+
+  /**
    * Updates inventory for a specific blood group, validating quantities and recording audit history.
    */
   public async updateBloodInventory(

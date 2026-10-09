@@ -354,6 +354,13 @@ class RequestService {
   }
 
   /**
+   * Alias for getBloodRequests
+   */
+  public async getRequests(filters?: RequestFilterOptions): Promise<BloodRequest[]> {
+    return this.getBloodRequests(filters);
+  }
+
+  /**
    * Retrieves a single blood request by ID
    */
   public async getBloodRequestById(id: string): Promise<BloodRequest | null> {

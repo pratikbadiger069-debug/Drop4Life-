@@ -13,6 +13,8 @@ export interface AuthUser {
   verificationStatus?: "active" | "pending" | "verified" | "rejected";
   bloodGroup?: BloodGroup;
   city?: string;
+  status?: "active" | "suspended";
+  createdAt?: string;
 }
 
 export interface AuthSession {
@@ -56,7 +58,7 @@ export interface RegisterNgoPayload {
 }
 
 /**
- * Pre-configured Demo Accounts for Phase 3 Review & QA
+ * Pre-configured Demo Accounts for Testing & Administration
  */
 export const DEMO_ACCOUNTS: Array<{
   email: string;
@@ -74,6 +76,8 @@ export const DEMO_ACCOUNTS: Array<{
       bloodGroup: "O-",
       city: "New York",
       verificationStatus: "active",
+      status: "active",
+      createdAt: "2026-09-01T00:00:00Z",
     },
   },
   {
@@ -87,6 +91,8 @@ export const DEMO_ACCOUNTS: Array<{
       organizationName: "St. Jude Medical Center",
       city: "New York",
       verificationStatus: "verified",
+      status: "active",
+      createdAt: "2026-09-05T00:00:00Z",
     },
   },
   {
@@ -100,11 +106,30 @@ export const DEMO_ACCOUNTS: Array<{
       organizationName: "Red Cross LifeCare Auxiliary",
       city: "Brooklyn",
       verificationStatus: "verified",
+      status: "active",
+      createdAt: "2026-09-10T00:00:00Z",
+    },
+  },
+  {
+    email: "admin@drop4life.org",
+    password: "AdminPass123!",
+    user: {
+      id: "usr-admin-001",
+      email: "admin@drop4life.org",
+      role: "admin",
+      fullName: "Platform System Administrator",
+      organizationName: "Drop4Life Governance & Oversight",
+      city: "New York",
+      verificationStatus: "verified",
+      status: "active",
+      createdAt: "2026-08-15T00:00:00Z",
     },
   },
 ];
 
 const SESSION_STORAGE_KEY = "drop4life_auth_session";
+const STATUS_OVERRIDES_KEY = "drop4life_user_status_overrides";
+const VERIFICATION_OVERRIDES_KEY = "drop4life_user_verification_overrides";
 
 /**
  * Drop4Life Authentication Development Adapter
@@ -137,13 +162,14 @@ class Drop4LifeAuthAdapter {
     // Artificial latency for UX realism
     await new Promise((resolve) => setTimeout(resolve, 350));
 
-    const normalizedEmail = email.trim().toLowerCase();
-    const demo = DEMO_ACCOUNTS.find(
-      (acc) => acc.email.toLowerCase() === normalizedEmail
-    );
+    let authenticatedUser: AuthUser | null = null;
+    const normalizedEmail = email.toLowerCase().trim();
+    const demo = DEMO_ACCOUNTS.find((d) => d.email.toLowerCase() === normalizedEmail);
 
-    if (!demo || demo.password !== password) {
-      // Also check if user was newly registered in localStorage
+    if (demo && demo.password === password) {
+      authenticatedUser = { ...demo.user };
+    } else {
+      // Check registered users in storage
       const registeredUsersJson = this.isClient()
         ? localStorage.getItem("drop4life_registered_users")
         : null;
@@ -158,27 +184,41 @@ class Drop4LifeAuthAdapter {
             (u) => u.email.toLowerCase() === normalizedEmail
           );
           if (found && found.passwordHash === password) {
-            const session: AuthSession = {
-              user: found.user,
-              token: `tok_${Math.random().toString(36).substring(2)}_${Date.now()}`,
-              expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-            };
-            if (this.isClient()) {
-              localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(session));
-            }
-            return session;
+            authenticatedUser = { ...found.user };
           }
         } catch {
-          // fallback to invalid
+          // fallback
         }
       }
+    }
 
+    if (!authenticatedUser) {
       throw new Error("Invalid email address or password. Please check your credentials.");
     }
 
+    // Apply any runtime status or verification overrides
+    if (this.isClient()) {
+      try {
+        const statusOverrides = JSON.parse(localStorage.getItem(STATUS_OVERRIDES_KEY) || "{}");
+        if (statusOverrides[authenticatedUser.id]) {
+          authenticatedUser.status = statusOverrides[authenticatedUser.id];
+        }
+        const verificationOverrides = JSON.parse(localStorage.getItem(VERIFICATION_OVERRIDES_KEY) || "{}");
+        if (verificationOverrides[authenticatedUser.id]) {
+          authenticatedUser.verificationStatus = verificationOverrides[authenticatedUser.id];
+        }
+      } catch {
+        // ignore
+      }
+    }
+
+    if (authenticatedUser.status === "suspended") {
+      throw new Error("Access Denied: Your account has been suspended by system administration.");
+    }
+
     const session: AuthSession = {
-      user: demo.user,
-      token: `tok_demo_${demo.user.role}_${Date.now()}`,
+      user: authenticatedUser,
+      token: `tok_${authenticatedUser.role}_${Date.now()}`,
       expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     };
 
@@ -187,6 +227,73 @@ class Drop4LifeAuthAdapter {
     }
 
     return session;
+  }
+
+  /**
+   * Retrieves all users (demo and registered) with runtime overrides applied (Admin access)
+   */
+  public async getAllUsers(): Promise<AuthUser[]> {
+    let usersList: AuthUser[] = DEMO_ACCOUNTS.map((d) => ({ ...d.user }));
+
+    if (this.isClient()) {
+      try {
+        const stored = localStorage.getItem("drop4life_registered_users");
+        if (stored) {
+          const registered: Array<{ user: AuthUser }> = JSON.parse(stored);
+          for (const item of registered) {
+            if (!usersList.some((u) => u.id === item.user.id || u.email.toLowerCase() === item.user.email.toLowerCase())) {
+              usersList.push({ ...item.user });
+            }
+          }
+        }
+
+        const statusOverrides = JSON.parse(localStorage.getItem(STATUS_OVERRIDES_KEY) || "{}");
+        const verificationOverrides = JSON.parse(localStorage.getItem(VERIFICATION_OVERRIDES_KEY) || "{}");
+
+        usersList = usersList.map((u) => ({
+          ...u,
+          status: statusOverrides[u.id] || u.status || "active",
+          verificationStatus: verificationOverrides[u.id] || u.verificationStatus || (u.role === "donor" ? "active" : "pending"),
+        }));
+      } catch {
+        // fallback
+      }
+    }
+
+    return usersList;
+  }
+
+  /**
+   * Updates user status (active vs suspended)
+   */
+  public async updateUserStatus(userId: string, status: "active" | "suspended"): Promise<void> {
+    if (this.isClient()) {
+      try {
+        const current = JSON.parse(localStorage.getItem(STATUS_OVERRIDES_KEY) || "{}");
+        current[userId] = status;
+        localStorage.setItem(STATUS_OVERRIDES_KEY, JSON.stringify(current));
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  /**
+   * Updates organization/user verification status
+   */
+  public async updateUserVerification(
+    userId: string,
+    verificationStatus: "verified" | "pending" | "rejected"
+  ): Promise<void> {
+    if (this.isClient()) {
+      try {
+        const current = JSON.parse(localStorage.getItem(VERIFICATION_OVERRIDES_KEY) || "{}");
+        current[userId] = verificationStatus;
+        localStorage.setItem(VERIFICATION_OVERRIDES_KEY, JSON.stringify(current));
+      } catch {
+        // ignore
+      }
+    }
   }
 
   public async registerDonor(payload: RegisterDonorPayload): Promise<AuthSession> {

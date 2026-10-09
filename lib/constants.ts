@@ -222,3 +222,15 @@ export const NGO_NAV_ITEMS = [
   { title: "Notifications", href: "/ngo/notifications", icon: "Bell", disabled: false },
   { title: "Reports", href: "/ngo/reports", icon: "FileText", disabled: true },
 ];
+
+export const ADMIN_NAV_ITEMS = [
+  { title: "Admin Overview", href: "/admin/dashboard", icon: "LayoutDashboard", disabled: false },
+  { title: "Verification Queue", href: "/admin/verifications", icon: "ShieldCheck", disabled: false },
+  { title: "User & Org Management", href: "/admin/users", icon: "Users", disabled: false },
+  { title: "System Audit Logs", href: "/admin/audit-logs", icon: "ShieldAlert", disabled: false },
+  { title: "Reports & Analytics", href: "/admin/reports", icon: "BarChart3", disabled: false },
+  { title: "Global Inventory", href: "/admin/inventory", icon: "Layers", disabled: false },
+  { title: "Requisitions Oversight", href: "/admin/requests", icon: "Send", disabled: false },
+  { title: "Campaign Oversight", href: "/admin/campaigns", icon: "Flag", disabled: false },
+];
+
