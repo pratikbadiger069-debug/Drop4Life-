@@ -1,4 +1,4 @@
-import { BloodGroup, RequestPriority } from "./types";
+import { BloodGroup, RequestPriority, RequestStatus } from "./types";
 
 export const APP_CONFIG = {
   name: "Drop4Life",
@@ -68,11 +68,71 @@ export const DONOR_AVAILABILITY_CONFIG: Record<
   },
 };
 
+export const REQUEST_STATUS_CONFIG: Record<
+  RequestStatus,
+  { label: string; description: string; color: string; badgeVariant: "destructive" | "warning" | "default" | "secondary" | "success" }
+> = {
+  SUBMITTED: {
+    label: "Submitted",
+    description: "Requisition submitted and logged. Awaiting clinical intake review.",
+    color: "text-blue-700 bg-blue-50 border-blue-200",
+    badgeVariant: "default",
+  },
+  UNDER_REVIEW: {
+    label: "Under Review",
+    description: "Hospital staff evaluating inventory buffer and activating matching engine.",
+    color: "text-amber-700 bg-amber-50 border-amber-200",
+    badgeVariant: "warning",
+  },
+  IN_PROGRESS: {
+    label: "In Progress",
+    description: "Compatible donor search and coordination actively underway.",
+    color: "text-indigo-700 bg-indigo-50 border-indigo-200",
+    badgeVariant: "default",
+  },
+  FULFILLED: {
+    label: "Fulfilled",
+    description: "Required blood units successfully fulfilled and verified.",
+    color: "text-emerald-700 bg-emerald-50 border-emerald-200",
+    badgeVariant: "success",
+  },
+  CANCELLED: {
+    label: "Cancelled",
+    description: "Request closed or withdrawn by authorized hospital personnel.",
+    color: "text-slate-600 bg-slate-100 border-slate-300",
+    badgeVariant: "secondary",
+  },
+  OPEN: {
+    label: "Open",
+    description: "Requisition submitted and pending review.",
+    color: "text-blue-700 bg-blue-50 border-blue-200",
+    badgeVariant: "default",
+  },
+  MATCHING: {
+    label: "Matching",
+    description: "Smart donor search active.",
+    color: "text-amber-700 bg-amber-50 border-amber-200",
+    badgeVariant: "warning",
+  },
+  RESPONSES_RECEIVED: {
+    label: "Responses Received",
+    description: "Potential donors responding to requisition.",
+    color: "text-indigo-700 bg-indigo-50 border-indigo-200",
+    badgeVariant: "default",
+  },
+  DONOR_CONFIRMED: {
+    label: "Donor Confirmed",
+    description: "Donor confirmed for appointment.",
+    color: "text-emerald-700 bg-emerald-50 border-emerald-200",
+    badgeVariant: "success",
+  },
+};
+
 export const DONOR_NAV_ITEMS = [
   { title: "Overview", href: "/donor/dashboard", icon: "LayoutDashboard", disabled: false },
   { title: "My Profile", href: "/donor/profile", icon: "User", disabled: false },
   { title: "Donation History", href: "/donor/donations", icon: "History", disabled: false },
-  { title: "Blood Requests", href: "/donor/requests", icon: "Inbox", disabled: true },
+  { title: "Blood Requests", href: "/donor/requests", icon: "Inbox", disabled: false },
   { title: "Notifications", href: "/donor/notifications", icon: "Bell", disabled: true },
   { title: "Settings", href: "/donor/settings", icon: "Settings", disabled: true },
 ];
@@ -111,8 +171,8 @@ export const HOSPITAL_NAV_ITEMS = [
   { title: "Command Radar", href: "/hospital/dashboard", icon: "Activity", disabled: false },
   { title: "Blood Inventory", href: "/hospital/inventory", icon: "Layers", disabled: false },
   { title: "Hospital Profile", href: "/hospital/profile", icon: "Building2", disabled: false },
-  { title: "Blood Requests", href: "/hospital/requests", icon: "Send", disabled: true },
-  { title: "Donor Matching", href: "/hospital/donors", icon: "Users", disabled: true },
+  { title: "Blood Requests", href: "/hospital/requests", icon: "Send", disabled: false },
+  { title: "Donor Matching", href: "/hospital/donors", icon: "Users", disabled: false },
   { title: "Analytics & Reports", href: "/hospital/reports", icon: "BarChart3", disabled: true },
   { title: "Settings", href: "/hospital/settings", icon: "Settings", disabled: true },
 ];

@@ -9,14 +9,15 @@ export type BloodGroup = "O-" | "O+" | "A-" | "A+" | "B-" | "B+" | "AB-" | "AB+"
 export type RequestPriority = "CRITICAL" | "EMERGENCY" | "URGENT" | "NORMAL";
 
 export type RequestStatus =
-  | "OPEN"
-  | "MATCHING"
-  | "RESPONSES_RECEIVED"
-  | "DONOR_CONFIRMED"
+  | "SUBMITTED"
+  | "UNDER_REVIEW"
   | "IN_PROGRESS"
   | "FULFILLED"
   | "CANCELLED"
-  | "EXPIRED";
+  | "OPEN" // legacy compatibility alias for SUBMITTED
+  | "MATCHING" // legacy compatibility alias for UNDER_REVIEW
+  | "RESPONSES_RECEIVED" // legacy alias
+  | "DONOR_CONFIRMED"; // legacy alias
 
 export type DonorResponseStatus =
   | "INVITED"
@@ -25,6 +26,72 @@ export type DonorResponseStatus =
   | "CONFIRMED"
   | "COMPLETED"
   | "NO_SHOW";
+
+export interface RequestDonorInvitation {
+  id: string;
+  requestId: string;
+  donorId: string;
+  donorUserId: string;
+  donorName: string;
+  donorBloodGroup: BloodGroup;
+  donorCity: string;
+  donorArea?: string;
+  preferredContactMethod: PreferredContactMethod;
+  status: DonorResponseStatus;
+  invitedAt: string;
+  respondedAt?: string;
+  notes?: string;
+}
+
+export interface RequestTimelineEvent {
+  status: RequestStatus;
+  timestamp: string;
+  updatedBy: string;
+  notes?: string;
+}
+
+export interface BloodRequest {
+  id: string;
+  referenceNumber: string;
+  hospitalId: string;
+  hospitalName: string;
+  department: string;
+  bloodGroup: BloodGroup;
+  unitsNeeded: number;
+  unitsFulfilled: number;
+  priority: RequestPriority;
+  requiredDate: string;
+  city: string;
+  area?: string;
+  requesterName: string;
+  requesterPhone: string;
+  requesterEmail: string;
+  clinicalNotes?: string;
+  status: RequestStatus;
+  statusTimeline: RequestTimelineEvent[];
+  invitedDonorIds?: string[];
+  confirmedDonorIds?: string[];
+  invitations?: RequestDonorInvitation[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DonorMatchResult {
+  donorId: string;
+  userId: string;
+  donorName: string;
+  bloodGroup: BloodGroup;
+  city: string;
+  area?: string;
+  preferredContactMethod: PreferredContactMethod;
+  matchScore: number; // 0 - 100%
+  isExactMatch: boolean;
+  compatibilityType: "EXACT" | "COMPATIBLE_RED_CELL";
+  matchExplanation: string;
+  daysSinceLastDonation?: number;
+  invitationStatus?: DonorResponseStatus;
+  invitedAt?: string;
+}
 
 export interface User {
   id: string;
