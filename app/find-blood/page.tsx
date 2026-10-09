@@ -12,6 +12,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Dialog } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
+import { FacilityFinder } from "@/components/location/facility-finder";
 import {
   ALL_BLOOD_GROUPS,
   PRIORITY_CONFIG,
@@ -322,22 +323,19 @@ export default function FindBloodPage() {
             </div>
           )}
 
-          {/* MAP INTEGRATION PLACEHOLDER SECTION */}
-          <div className="mt-14 rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center space-y-4">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-600">
-              <Map className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="text-lg font-bold text-slate-900">
-                Interactive Radius Map View
-              </h3>
-              <p className="text-xs text-slate-500 max-w-md mx-auto mt-1 leading-relaxed">
-                Full OpenStreetMap & Leaflet interactive map clustering will be integrated in <strong>Phase 9</strong>, allowing donors to filter requests within a 5 km to 50 km geographic radius.
+          {/* INTERACTIVE LOCATION DISCOVERY & FACILITY DIRECTORY */}
+          <div className="mt-14 space-y-4">
+            <div className="text-center max-w-2xl mx-auto space-y-2">
+              <Badge variant="default">Interactive Discovery</Badge>
+              <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+                Participating Blood Banks & Transfusion Pavilions
+              </h2>
+              <p className="text-xs text-slate-600">
+                Locate verified hospital trauma units, blood banks, and donation venues on the interactive map with live distance calculations.
               </p>
             </div>
-            <Badge variant="secondary" className="text-xs">
-              Scheduled for Phase 9 Implementation
-            </Badge>
+
+            <FacilityFinder defaultView="map" />
           </div>
         </section>
       </main>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -9,7 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
-import { MOCK_PUBLIC_CAMPAIGNS, PublicCampaign } from "@/lib/mock-data";
+import { Campaign } from "@/lib/types";
+import { campaignService } from "@/lib/campaigns/campaign-service";
+import { CampaignRegistrationDialog } from "@/components/campaigns/campaign-registration-dialog";
 import {
   Search,
   Calendar,
@@ -22,20 +24,43 @@ import {
   Heart,
   ShieldCheck,
   CheckCircle2,
+  Phone,
+  Mail,
+  Loader2,
 } from "lucide-react";
 
 export default function CampaignsPage() {
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("ALL");
-  const [activeModalCampaign, setActiveModalCampaign] = useState<PublicCampaign | null>(null);
+  const [activeModalCampaign, setActiveModalCampaign] = useState<Campaign | null>(null);
+  const [registeringCampaign, setRegisteringCampaign] = useState<Campaign | null>(null);
+
+  const fetchCampaigns = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await campaignService.getCampaigns({ excludeDrafts: true });
+      setCampaigns(data);
+    } catch (err) {
+      console.error("Failed to load campaigns", err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCampaigns();
+  }, [fetchCampaigns]);
 
   const filteredCampaigns = useMemo(() => {
-    return MOCK_PUBLIC_CAMPAIGNS.filter((camp) => {
+    return campaigns.filter((camp) => {
       if (
         searchQuery.trim() !== "" &&
         !camp.title.toLowerCase().includes(searchQuery.toLowerCase().trim()) &&
         !camp.city.toLowerCase().includes(searchQuery.toLowerCase().trim()) &&
-        !camp.organizerName.toLowerCase().includes(searchQuery.toLowerCase().trim())
+        !camp.ngoName.toLowerCase().includes(searchQuery.toLowerCase().trim()) &&
+        !camp.venueName.toLowerCase().includes(searchQuery.toLowerCase().trim())
       ) {
         return false;
       }
@@ -44,7 +69,7 @@ export default function CampaignsPage() {
       }
       return true;
     });
-  }, [searchQuery, selectedStatus]);
+  }, [campaigns, searchQuery, selectedStatus]);
 
   const handleReset = () => {
     setSearchQuery("");
@@ -62,7 +87,7 @@ export default function CampaignsPage() {
             <div className="max-w-3xl space-y-3">
               <div className="inline-flex items-center gap-2">
                 <Badge variant="warning">Community Mobilization</Badge>
-                <span className="text-xs text-muted-foreground font-mono">Sample Drives (Phase 2)</span>
+                <span className="text-xs text-muted-foreground font-mono">Public Donation Drives</span>
               </div>
               <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
                 Public Blood Donation Campaigns
@@ -97,7 +122,7 @@ export default function CampaignsPage() {
                 >
                   <option value="ALL">All Statuses</option>
                   <option value="ACTIVE">Active (Ongoing)</option>
-                  <option value="UPCOMING">Upcoming Drives</option>
+                  <option value="PUBLISHED">Upcoming / Published</option>
                   <option value="COMPLETED">Past Completed</option>
                 </select>
 
@@ -124,11 +149,16 @@ export default function CampaignsPage() {
               Showing {filteredCampaigns.length} Campaign{filteredCampaigns.length === 1 ? "" : "s"}
             </p>
             <span className="text-xs text-muted-foreground">
-              Simulated demonstration feed
+              Live Verified Campaigns
             </span>
           </div>
 
-          {filteredCampaigns.length === 0 ? (
+          {loading ? (
+            <div className="py-20 text-center">
+              <Loader2 className="w-8 h-8 animate-spin text-red-600 mx-auto mb-3" />
+              <p className="text-sm text-slate-500 font-medium">Loading community campaigns...</p>
+            </div>
+          ) : filteredCampaigns.length === 0 ? (
             <EmptyState
               icon={<Calendar className="h-6 w-6 text-slate-400" />}
               title="No Campaigns Found"
@@ -141,7 +171,7 @@ export default function CampaignsPage() {
               {filteredCampaigns.map((camp) => (
                 <Card
                   key={camp.id}
-                  className="flex flex-col justify-between border-slate-200 hover:border-amber-300 transition-all hover:shadow-md bg-white"
+                  className="flex flex-col justify-between border-slate-200 hover:border-red-300 transition-all hover:shadow-md bg-white"
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
@@ -149,24 +179,29 @@ export default function CampaignsPage() {
                         variant={
                           camp.status === "ACTIVE"
                             ? "success"
-                            : camp.status === "UPCOMING"
+                            : camp.status === "PUBLISHED"
                             ? "warning"
-                            : "secondary"
+                            : camp.status === "COMPLETED"
+                            ? "secondary"
+                            : "destructive"
                         }
                         dot={camp.status === "ACTIVE"}
                       >
                         {camp.status}
                       </Badge>
-                      <span className="text-xs text-muted-foreground font-medium">
-                        {camp.organizerType}
-                      </span>
+                      {camp.isVerifiedOrg && (
+                        <span className="inline-flex items-center gap-1 text-[11px] text-blue-700 bg-blue-50 px-2 py-0.5 rounded font-semibold border border-blue-200">
+                          <ShieldCheck className="w-3 h-3 text-blue-600" />
+                          Verified NGO
+                        </span>
+                      )}
                     </div>
 
                     <CardTitle className="text-lg font-bold text-slate-900 mt-2 leading-snug">
                       {camp.title}
                     </CardTitle>
                     <CardDescription className="text-xs text-slate-500">
-                      Organized by <strong>{camp.organizerName}</strong>
+                      Organized by <strong>{camp.ngoName}</strong>
                     </CardDescription>
                   </CardHeader>
 
@@ -178,11 +213,13 @@ export default function CampaignsPage() {
                     <div className="space-y-1.5 pt-2 border-t border-slate-100">
                       <div className="flex items-center gap-2 text-slate-700">
                         <Calendar className="w-3.5 h-3.5 text-red-700 shrink-0" />
-                        <span className="font-medium">{camp.startDate} – {camp.endDate}</span>
+                        <span className="font-medium">
+                          {camp.startDate} {camp.startDate !== camp.endDate ? `– ${camp.endDate}` : ""} ({camp.startTime} - {camp.endTime})
+                        </span>
                       </div>
                       <div className="flex items-center gap-2 text-slate-700">
                         <MapPin className="w-3.5 h-3.5 text-red-700 shrink-0" />
-                        <span>{camp.locationAddress}, {camp.city}</span>
+                        <span className="truncate">{camp.venueName}, {camp.city}</span>
                       </div>
                     </div>
 
@@ -190,15 +227,15 @@ export default function CampaignsPage() {
                     <div className="pt-2">
                       <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
                         <span>Target: {camp.targetUnits} Units</span>
-                        <span>{camp.registeredDonors} Registered ({Math.round((camp.registeredDonors / camp.targetUnits) * 100)}%)</span>
+                        <span>{camp.registeredCount} Registered ({Math.round((camp.registeredCount / camp.targetUnits) * 100)}%)</span>
                       </div>
                       <div className="h-2 w-full rounded-full bg-slate-100 overflow-hidden">
                         <div
-                          className="h-full bg-primary rounded-full transition-all duration-500"
+                          className="h-full bg-red-600 rounded-full transition-all duration-500"
                           style={{
                             width: `${Math.min(
                               100,
-                              Math.round((camp.registeredDonors / camp.targetUnits) * 100)
+                              Math.round((camp.registeredCount / camp.targetUnits) * 100)
                             )}%`,
                           }}
                         />
@@ -215,15 +252,16 @@ export default function CampaignsPage() {
                     >
                       Drive Details
                     </Button>
-                    <Link href="/register/donor" className="w-full">
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        className="w-full text-xs font-bold"
-                      >
-                        Pledge / RSVP
-                      </Button>
-                    </Link>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="w-full text-xs font-bold bg-red-700 hover:bg-red-800 text-white"
+                      disabled={camp.status === "CANCELLED" || camp.status === "COMPLETED"}
+                      onClick={() => setRegisteringCampaign(camp)}
+                    >
+                      <Heart className="w-3.5 h-3.5 mr-1 fill-white" />
+                      Pledge / RSVP
+                    </Button>
                   </CardFooter>
                 </Card>
               ))}
@@ -231,9 +269,9 @@ export default function CampaignsPage() {
           )}
 
           {/* NGO HOST CALLOUT */}
-          <div className="mt-16 rounded-2xl border border-amber-200 bg-amber-50/50 p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="mt-16 rounded-2xl border border-red-200 bg-red-50/50 p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-2 max-w-xl">
-              <div className="flex items-center gap-2 text-amber-900 font-bold text-sm">
+              <div className="flex items-center gap-2 text-red-900 font-bold text-sm">
                 <Building2 className="w-4 h-4" />
                 <span>Are you an NGO or Community Organizer?</span>
               </div>
@@ -245,9 +283,9 @@ export default function CampaignsPage() {
               </p>
             </div>
 
-            <Link href="/contact">
-              <Button variant="default" className="font-bold shrink-0">
-                Partner as an NGO
+            <Link href="/ngo/dashboard">
+              <Button variant="default" className="font-bold shrink-0 bg-red-700 hover:bg-red-800 text-white">
+                NGO Dashboard Portal
               </Button>
             </Link>
           </div>
@@ -260,7 +298,7 @@ export default function CampaignsPage() {
           isOpen={true}
           onClose={() => setActiveModalCampaign(null)}
           title={activeModalCampaign.title}
-          description={`Organized by ${activeModalCampaign.organizerName} (${activeModalCampaign.organizerType})`}
+          description={`Organized by ${activeModalCampaign.ngoName}`}
           footer={
             <>
               <Button
@@ -270,11 +308,20 @@ export default function CampaignsPage() {
               >
                 Close
               </Button>
-              <Link href="/register/donor">
-                <Button variant="default" size="sm" className="font-bold">
-                  Sign In to RSVP
-                </Button>
-              </Link>
+              <Button
+                variant="default"
+                size="sm"
+                className="font-bold bg-red-700 hover:bg-red-800 text-white"
+                disabled={activeModalCampaign.status === "CANCELLED" || activeModalCampaign.status === "COMPLETED"}
+                onClick={() => {
+                  const target = activeModalCampaign;
+                  setActiveModalCampaign(null);
+                  setRegisteringCampaign(target);
+                }}
+              >
+                <Heart className="w-3.5 h-3.5 mr-1 fill-white" />
+                Pledge / RSVP
+              </Button>
             </>
           }
         >
@@ -286,11 +333,13 @@ export default function CampaignsPage() {
             <div className="rounded-lg bg-slate-50 p-3 space-y-2 text-xs border border-slate-200">
               <div className="flex justify-between border-b pb-1.5">
                 <span className="text-slate-500">Date & Time:</span>
-                <span className="font-semibold text-slate-900">{activeModalCampaign.startDate} – {activeModalCampaign.endDate}</span>
+                <span className="font-semibold text-slate-900">
+                  {activeModalCampaign.startDate} {activeModalCampaign.startDate !== activeModalCampaign.endDate ? `– ${activeModalCampaign.endDate}` : ""} ({activeModalCampaign.startTime} - {activeModalCampaign.endTime})
+                </span>
               </div>
               <div className="flex justify-between border-b pb-1.5">
                 <span className="text-slate-500">Venue Address:</span>
-                <span className="font-semibold text-slate-900">{activeModalCampaign.locationAddress}</span>
+                <span className="font-semibold text-slate-900">{activeModalCampaign.venueName}, {activeModalCampaign.address}</span>
               </div>
               <div className="flex justify-between border-b pb-1.5">
                 <span className="text-slate-500">City / Region:</span>
@@ -298,25 +347,46 @@ export default function CampaignsPage() {
               </div>
               <div className="flex justify-between border-b pb-1.5">
                 <span className="text-slate-500">Target Donations:</span>
-                <span className="font-bold text-primary">{activeModalCampaign.targetUnits} Units</span>
+                <span className="font-bold text-red-700">{activeModalCampaign.targetUnits} Units</span>
+              </div>
+              <div className="flex justify-between border-b pb-1.5">
+                <span className="text-slate-500">Registered Participants:</span>
+                <span className="font-bold text-emerald-700">
+                  {activeModalCampaign.registeredCount} {activeModalCampaign.capacityLimit ? `/ ${activeModalCampaign.capacityLimit}` : ""} Participants
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500">Registered Volunteers:</span>
-                <span className="font-bold text-emerald-700">{activeModalCampaign.registeredDonors} Participants</span>
+                <span className="text-slate-500">Contact Organizer:</span>
+                <span className="font-medium text-slate-700">{activeModalCampaign.contactPhone} • {activeModalCampaign.contactEmail}</span>
               </div>
             </div>
 
-            <div className="rounded-lg bg-amber-50 p-3 text-[11px] text-amber-900 border border-amber-200 flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-              <span>
-                <strong>Volunteer Note:</strong> Please bring a valid government photo ID and ensure adequate hydration prior to donation.
-              </span>
-            </div>
+            {activeModalCampaign.registrationInstructions && (
+              <div className="rounded-lg bg-amber-50 p-3 text-[11px] text-amber-900 border border-amber-200 flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                <span>
+                  <strong>Instructions:</strong> {activeModalCampaign.registrationInstructions}
+                </span>
+              </div>
+            )}
           </div>
         </Dialog>
       )}
+
+      {/* REGISTRATION DIALOG */}
+      <CampaignRegistrationDialog
+        campaign={registeringCampaign}
+        open={!!registeringCampaign}
+        onOpenChange={(open) => {
+          if (!open) setRegisteringCampaign(null);
+        }}
+        onRegisteredSuccess={() => {
+          fetchCampaigns();
+        }}
+      />
 
       <Footer />
     </div>
   );
 }
+

@@ -7,6 +7,7 @@ import { BrandLogo } from "@/components/branding/brand-logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UserRole, NavItem } from "@/lib/types";
+import { NotificationBellPopover } from "@/components/notifications/notification-bell-popover";
 import {
   Menu,
   X,
@@ -91,16 +92,15 @@ export function DashboardShell({
 
         {/* User menu and notifications */}
         <div className="flex items-center gap-3">
-          <button
-            className="relative rounded-full p-2 text-slate-500 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-primary"
-            aria-label="Notifications"
-          >
-            <Bell className="h-5 w-5" />
-            <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-600" />
-            </span>
-          </button>
+          <NotificationBellPopover
+            notificationsPageUrl={
+              role === "donor"
+                ? "/donor/notifications"
+                : role === "hospital"
+                ? "/hospital/notifications"
+                : "/ngo/notifications"
+            }
+          />
 
           <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
             <div className="h-8 w-8 rounded-full bg-red-100 border border-red-200 flex items-center justify-center text-primary font-bold text-xs">

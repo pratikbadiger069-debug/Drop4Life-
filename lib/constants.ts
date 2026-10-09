@@ -133,7 +133,7 @@ export const DONOR_NAV_ITEMS = [
   { title: "My Profile", href: "/donor/profile", icon: "User", disabled: false },
   { title: "Donation History", href: "/donor/donations", icon: "History", disabled: false },
   { title: "Blood Requests", href: "/donor/requests", icon: "Inbox", disabled: false },
-  { title: "Notifications", href: "/donor/notifications", icon: "Bell", disabled: true },
+  { title: "Notifications", href: "/donor/notifications", icon: "Bell", disabled: false },
   { title: "Settings", href: "/donor/settings", icon: "Settings", disabled: true },
 ];
 
@@ -167,22 +167,58 @@ export const STOCK_STATUS_CONFIG: Record<
   },
 };
 
+export const CAMPAIGN_STATUS_CONFIG: Record<
+  string,
+  { label: string; description: string; color: string; badgeVariant: "destructive" | "warning" | "success" | "secondary" | "default" }
+> = {
+  DRAFT: {
+    label: "Draft",
+    description: "Unpublished campaign draft visible only to your NGO team.",
+    color: "text-slate-600 bg-slate-100 border-slate-300",
+    badgeVariant: "secondary",
+  },
+  PUBLISHED: {
+    label: "Published (Upcoming)",
+    description: "Open for donor volunteer interest registration.",
+    color: "text-blue-700 bg-blue-50 border-blue-200",
+    badgeVariant: "default",
+  },
+  ACTIVE: {
+    label: "Live / In Progress",
+    description: "Blood drive actively collecting donations on site.",
+    color: "text-emerald-700 bg-emerald-50 border-emerald-200",
+    badgeVariant: "success",
+  },
+  COMPLETED: {
+    label: "Completed",
+    description: "Campaign finished and logged into historical archives.",
+    color: "text-slate-700 bg-slate-50 border-slate-200",
+    badgeVariant: "secondary",
+  },
+  CANCELLED: {
+    label: "Cancelled",
+    description: "Campaign cancelled or postponed by organizer.",
+    color: "text-red-700 bg-red-50 border-red-200",
+    badgeVariant: "destructive",
+  },
+};
+
 export const HOSPITAL_NAV_ITEMS = [
   { title: "Command Radar", href: "/hospital/dashboard", icon: "Activity", disabled: false },
   { title: "Blood Inventory", href: "/hospital/inventory", icon: "Layers", disabled: false },
   { title: "Hospital Profile", href: "/hospital/profile", icon: "Building2", disabled: false },
   { title: "Blood Requests", href: "/hospital/requests", icon: "Send", disabled: false },
   { title: "Donor Matching", href: "/hospital/donors", icon: "Users", disabled: false },
+  { title: "Notifications", href: "/hospital/notifications", icon: "Bell", disabled: false },
   { title: "Analytics & Reports", href: "/hospital/reports", icon: "BarChart3", disabled: true },
   { title: "Settings", href: "/hospital/settings", icon: "Settings", disabled: true },
 ];
 
 export const NGO_NAV_ITEMS = [
-  { title: "Campaign Dashboard", href: "/ngo/dashboard", icon: "LayoutDashboard", disabled: true },
-  { title: "Campaigns", href: "/ngo/campaigns", icon: "Flag", disabled: true },
-  { title: "Blood Drives", href: "/ngo/blood-drives", icon: "Calendar", disabled: true },
-  { title: "Donor Volunteers", href: "/ngo/donors", icon: "Users", disabled: true },
-  { title: "Partner Hospitals", href: "/ngo/hospitals", icon: "Building", disabled: true },
+  { title: "Campaign Dashboard", href: "/ngo/dashboard", icon: "LayoutDashboard", disabled: false },
+  { title: "My Campaigns", href: "/ngo/campaigns", icon: "Flag", disabled: false },
+  { title: "Volunteer Participants", href: "/ngo/participants", icon: "Users", disabled: false },
+  { title: "Organization Profile", href: "/ngo/profile", icon: "Building2", disabled: false },
+  { title: "Notifications", href: "/ngo/notifications", icon: "Bell", disabled: false },
   { title: "Reports", href: "/ngo/reports", icon: "FileText", disabled: true },
-  { title: "Organization Profile", href: "/ngo/profile", icon: "Building2", disabled: true },
 ];

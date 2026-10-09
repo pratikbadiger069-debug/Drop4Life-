@@ -193,8 +193,126 @@ export interface NGOProfile {
   contactPerson: string;
   phone: string;
   coverageArea: string;
+  city?: string;
+  address?: string;
   isVerified: boolean;
+  verificationStatus?: "verified" | "pending" | "rejected";
+  website?: string;
+  description?: string;
+  updatedAt?: string;
 }
+
+export type NotificationCategory =
+  | "BLOOD_REQUEST"
+  | "DONOR_MATCH"
+  | "INVENTORY_ALERT"
+  | "CAMPAIGN"
+  | "SYSTEM";
+
+export type NotificationPriority = "HIGH" | "MEDIUM" | "LOW";
+
+export interface AppNotification {
+  id: string;
+  userId: string;
+  role: UserRole;
+  title: string;
+  message: string;
+  category: NotificationCategory;
+  priority: NotificationPriority;
+  linkUrl?: string;
+  isRead: boolean;
+  metadata?: {
+    requestId?: string;
+    campaignId?: string;
+    bloodGroup?: BloodGroup;
+    hospitalId?: string;
+    [key: string]: any;
+  };
+  createdAt: string;
+  readAt?: string;
+}
+
+export interface NotificationPreferences {
+  inAppAlerts: boolean;
+  emailAlerts: boolean;
+  smsAlerts: boolean;
+  urgentRequestsOnly: boolean;
+  campaignAnnouncements: boolean;
+  inventoryAlerts: boolean;
+}
+
+export type CampaignStatus =
+  | "DRAFT"
+  | "PUBLISHED"
+  | "ACTIVE"
+  | "COMPLETED"
+  | "CANCELLED";
+
+export interface CampaignParticipant {
+  id: string;
+  campaignId: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userPhone?: string;
+  bloodGroup?: BloodGroup;
+  participantRole: "donor" | "volunteer" | "medical_volunteer";
+  registeredAt: string;
+  status: "REGISTERED" | "ATTENDED" | "CANCELLED";
+  notes?: string;
+}
+
+export interface Campaign {
+  id: string;
+  ngoId: string;
+  ngoName: string;
+  title: string;
+  description: string;
+  venueName: string;
+  address: string;
+  city: string;
+  area?: string;
+  latitude?: number;
+  longitude?: number;
+  startDate: string;
+  endDate: string;
+  startTime: string;
+  endTime: string;
+  targetUnits: number;
+  collectedUnits?: number;
+  capacityLimit?: number;
+  registeredCount: number;
+  contactPhone: string;
+  contactEmail: string;
+  registrationInstructions?: string;
+  status: CampaignStatus;
+  isVerifiedOrg: boolean;
+  participants?: CampaignParticipant[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type FacilityType = "HOSPITAL" | "BLOOD_BANK" | "CAMPAIGN_VENUE";
+
+export interface FacilityLocation {
+  id: string;
+  name: string;
+  facilityType: FacilityType;
+  address: string;
+  city: string;
+  area?: string;
+  latitude: number;
+  longitude: number;
+  phone: string;
+  emergencyPhone?: string;
+  email?: string;
+  distanceKm?: number;
+  operatingHours?: string;
+  isOpen24x7?: boolean;
+  availableBloodGroups?: BloodGroup[];
+  activeCampaignId?: string;
+}
+
 
 export interface BloodInventoryItem {
   hospitalId: string;
