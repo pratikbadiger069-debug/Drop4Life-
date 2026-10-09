@@ -47,6 +47,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/blood-compatibility" className="hover:text-white transition-colors">
+                  Blood Compatibility
+                </Link>
+              </li>
+              <li>
                 <Link href="/campaigns" className="hover:text-white transition-colors">
                   Campaigns
                 </Link>

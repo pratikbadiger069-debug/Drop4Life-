@@ -37,6 +37,7 @@ export const PUBLIC_NAV_ITEMS = [
   { title: "Home", href: "/" },
   { title: "How It Works", href: "/how-it-works" },
   { title: "Find Blood", href: "/find-blood" },
+  { title: "Compatibility", href: "/blood-compatibility" },
   { title: "Campaigns", href: "/campaigns" },
   { title: "About", href: "/about" },
   { title: "Contact", href: "/contact" },

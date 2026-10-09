@@ -97,7 +97,11 @@ export default function FindBloodPage() {
                 Find Urgent Blood Requisitions
               </h1>
               <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-                Search verified hospital blood demands by blood type, city location, and urgency priority. Compatible voluntary donors can sign in to respond directly.
+                Search verified hospital blood demands by blood type, city location, and urgency priority. Not sure if you can donate? Check our{" "}
+                <Link href="/blood-compatibility" className="text-red-700 font-semibold hover:underline inline-flex items-center gap-0.5">
+                  Blood Compatibility Guide <ArrowRight className="w-3.5 h-3.5 inline" />
+                </Link>
+                .
               </p>
             </div>
           </div>

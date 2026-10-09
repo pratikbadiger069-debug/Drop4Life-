@@ -4,6 +4,8 @@ import HomePage from "@/app/page";
 import HowItWorksPage from "@/app/how-it-works/page";
 import AboutPage from "@/app/about/page";
 
+import BloodCompatibilityPage from "@/app/blood-compatibility/page";
+
 describe("Public Pages Rendering", () => {
   it("renders Landing Page with Drop4Life headline and tagline", () => {
     render(<HomePage />);
@@ -27,4 +29,12 @@ describe("Public Pages Rendering", () => {
     expect(screen.getByText(/1\. trust & integrity/i)).toBeInTheDocument();
     expect(screen.getByText(/2\. strict privacy/i)).toBeInTheDocument();
   });
+
+  it("renders Blood Compatibility page with checker and educational guides", () => {
+    render(<BloodCompatibilityPage />);
+    expect(screen.getByRole("heading", { level: 1, name: /Blood Group Compatibility Checker/i })).toBeInTheDocument();
+    expect(screen.getByText(/Mandatory Clinical Safety Notice/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: /Understanding Red Blood Cell Compatibility/i })).toBeInTheDocument();
+  });
 });
+
