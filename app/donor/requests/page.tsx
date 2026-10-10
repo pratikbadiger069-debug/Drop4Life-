@@ -389,6 +389,10 @@ export default function DonorRequestsPage() {
                     ))}
                   </div>
                 </div>
+              )}
+            </div>
+          )}
+
           {/* Feature 2: Medical Pre-Screening Dialog required before accepting SOS requests */}
           {user && (
             <MedicalPrescreeningDialog

@@ -34,6 +34,7 @@ import {
   AlertTriangle,
   Stethoscope,
   Award,
+  ShieldAlert,
 } from "lucide-react";
 
 export default function DonorDashboardPage() {

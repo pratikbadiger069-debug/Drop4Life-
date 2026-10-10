@@ -183,7 +183,7 @@ export default function BloodBankDashboardPage() {
                     Component Inventory & Stock Status
                   </CardTitle>
                   <CardDescription className="text-xs text-slate-500">
-                    Live stock by blood group. Click "Adjust Stock" to log clinical updates with staff identity.
+                    Live stock by blood group. Click &ldquo;Adjust Stock&rdquo; to log clinical updates with staff identity.
                   </CardDescription>
                 </div>
                 <Badge variant="outline" className="text-xs font-semibold">
