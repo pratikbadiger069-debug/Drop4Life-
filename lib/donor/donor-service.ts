@@ -413,7 +413,7 @@ class DonorService {
 
     let currentLevel: DonorBadgeLevel = "NONE";
     let badgeTitle = "Novice Donor";
-    let nextThreshold = DONOR_REWARD_TIERS.BRONZE.threshold;
+    let nextThreshold: number = DONOR_REWARD_TIERS.BRONZE.threshold;
 
     if (platinumUnlocked) {
       currentLevel = "PLATINUM";

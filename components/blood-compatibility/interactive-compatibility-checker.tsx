@@ -16,12 +16,13 @@ import {
   getCompatibleRecipients,
   isUniversalDonor,
   isUniversalRecipient,
+  SupportedComponent,
 } from "@/lib/blood-compatibility";
 import { Droplet, ArrowRight, ShieldCheck, Info, Check, HeartHandshake } from "lucide-react";
 
 export function InteractiveBloodCompatibilityChecker() {
   const [selectedGroup, setSelectedGroup] = useState<BloodGroup>("O+");
-  const [component, setComponent] = useState<BloodComponent>("rbc");
+  const [component, setComponent] = useState<SupportedComponent>("rbc");
 
   const compatibleDonors = getCompatibleDonors(selectedGroup, component);
   const compatibleRecipients = getCompatibleRecipients(selectedGroup, component);

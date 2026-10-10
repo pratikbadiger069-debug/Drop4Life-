@@ -141,7 +141,7 @@ export default function ContactPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Input
                       label="Full Name"
-                      placeholder="Jane Doe"
+                      placeholder="Aarav Sharma"
                       value={fullName}
                       onChange={(e) => {
                         setFullName(e.target.value);
@@ -154,7 +154,7 @@ export default function ContactPage() {
                     <Input
                       label="Email Address"
                       type="email"
-                      placeholder="jane@example.com"
+                      placeholder="aarav.sharma@example.com"
                       value={email}
                       onChange={(e) => {
                         setEmail(e.target.value);

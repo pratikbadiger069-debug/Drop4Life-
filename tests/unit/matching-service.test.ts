@@ -18,8 +18,8 @@ describe("Smart Donor Matching Service (Phase 7)", () => {
         fullName: "A+ Donor",
         email: "apos@example.org",
         bloodGroup: "A+",
-        phone: "+15551234567",
-        city: "New York",
+        phone: "+91 98765 00001",
+        city: "Hyderabad",
         availabilityStatus: "AVAILABLE",
         preferredContactMethod: "EMAIL",
         profileCompletion: 100,
@@ -29,7 +29,7 @@ describe("Smart Donor Matching Service (Phase 7)", () => {
       const result = matchingService.evaluateDonorMatch(
         aPosDonor,
         "O-",
-        "New York"
+        "Hyderabad"
       );
 
       expect(result).toBeNull();
@@ -42,8 +42,8 @@ describe("Smart Donor Matching Service (Phase 7)", () => {
         fullName: "Busy Donor",
         email: "busy@example.org",
         bloodGroup: "O-",
-        phone: "+15551234567",
-        city: "New York",
+        phone: "+91 98765 00001",
+        city: "Hyderabad",
         availabilityStatus: "TEMPORARILY_UNAVAILABLE",
         preferredContactMethod: "EMAIL",
         profileCompletion: 100,
@@ -55,15 +55,15 @@ describe("Smart Donor Matching Service (Phase 7)", () => {
         fullName: "Optout Donor",
         email: "optout@example.org",
         bloodGroup: "O-",
-        phone: "+15551234567",
-        city: "New York",
+        phone: "+91 98765 00001",
+        city: "Hyderabad",
         availabilityStatus: "DO_NOT_CONTACT",
         preferredContactMethod: "EMAIL",
         profileCompletion: 100,
       };
 
-      expect(matchingService.evaluateDonorMatch(busyDonor, "O-", "New York")).toBeNull();
-      expect(matchingService.evaluateDonorMatch(optOutDonor, "O-", "New York")).toBeNull();
+      expect(matchingService.evaluateDonorMatch(busyDonor, "O-", "Hyderabad")).toBeNull();
+      expect(matchingService.evaluateDonorMatch(optOutDonor, "O-", "Hyderabad")).toBeNull();
     });
 
     it("ranks exact ABO/Rh matches higher than compatible alternative blood groups", () => {
@@ -73,9 +73,9 @@ describe("Smart Donor Matching Service (Phase 7)", () => {
         fullName: "Exact A+ Donor",
         email: "exact@example.org",
         bloodGroup: "A+",
-        phone: "+15551234567",
-        city: "New York",
-        area: "Manhattan",
+        phone: "+91 98765 00001",
+        city: "Hyderabad",
+        area: "Jubilee Hills",
         availabilityStatus: "AVAILABLE",
         preferredContactMethod: "SMS",
         lastDonatedAt: "2026-06-01",
@@ -88,17 +88,17 @@ describe("Smart Donor Matching Service (Phase 7)", () => {
         fullName: "Compatible O- Donor",
         email: "compat@example.org",
         bloodGroup: "O-",
-        phone: "+15551234567",
-        city: "New York",
-        area: "Manhattan",
+        phone: "+91 98765 00001",
+        city: "Hyderabad",
+        area: "Jubilee Hills",
         availabilityStatus: "AVAILABLE",
         preferredContactMethod: "SMS",
         lastDonatedAt: "2026-06-01",
         profileCompletion: 100,
       };
 
-      const exactEval = matchingService.evaluateDonorMatch(exactDonor, "A+", "New York", "Manhattan");
-      const compatEval = matchingService.evaluateDonorMatch(compatibleDonor, "A+", "New York", "Manhattan");
+      const exactEval = matchingService.evaluateDonorMatch(exactDonor, "A+", "Hyderabad", "Jubilee Hills");
+      const compatEval = matchingService.evaluateDonorMatch(compatibleDonor, "A+", "Hyderabad", "Jubilee Hills");
 
       expect(exactEval).not.toBeNull();
       expect(compatEval).not.toBeNull();
@@ -114,9 +114,9 @@ describe("Smart Donor Matching Service (Phase 7)", () => {
         fullName: "Local Donor",
         email: "local@example.org",
         bloodGroup: "O-",
-        phone: "+15551234567",
-        city: "New York",
-        area: "Manhattan",
+        phone: "+91 98765 00001",
+        city: "Hyderabad",
+        area: "Jubilee Hills",
         availabilityStatus: "AVAILABLE",
         preferredContactMethod: "SMS",
         profileCompletion: 100,
@@ -128,16 +128,16 @@ describe("Smart Donor Matching Service (Phase 7)", () => {
         fullName: "Distant Donor",
         email: "distant@example.org",
         bloodGroup: "O-",
-        phone: "+15551234567",
-        city: "Boston",
-        area: "Back Bay",
+        phone: "+91 98765 00001",
+        city: "Bengaluru",
+        area: "Whitefield",
         availabilityStatus: "AVAILABLE",
         preferredContactMethod: "SMS",
         profileCompletion: 100,
       };
 
-      const localEval = matchingService.evaluateDonorMatch(localDonor, "O-", "New York", "Manhattan");
-      const distantEval = matchingService.evaluateDonorMatch(distantDonor, "O-", "New York", "Manhattan");
+      const localEval = matchingService.evaluateDonorMatch(localDonor, "O-", "Hyderabad", "Jubilee Hills");
+      const distantEval = matchingService.evaluateDonorMatch(distantDonor, "O-", "Hyderabad", "Jubilee Hills");
 
       expect(localEval!.locationPoints).toBeGreaterThan(distantEval!.locationPoints);
       expect(localEval!.totalScore).toBeGreaterThan(distantEval!.totalScore);
@@ -153,10 +153,10 @@ describe("Smart Donor Matching Service (Phase 7)", () => {
         priority: "CRITICAL",
         requiredDate: "2026-10-14",
         department: "Trauma Wing",
-        city: "New York",
+        city: "Hyderabad",
       });
 
-      // 2. Hospital invites demo donor Alex Morgan (prof-donor-001)
+      // 2. Hospital invites demo donor Rahul Kumar (prof-donor-001)
       const invitation = await matchingService.inviteDonor(req.id, "prof-donor-001");
       expect(invitation.status).toBe("INVITED");
       expect(invitation.donorUserId).toBe("usr-donor-001");

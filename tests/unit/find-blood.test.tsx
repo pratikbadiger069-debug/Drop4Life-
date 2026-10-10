@@ -16,7 +16,7 @@ describe("Find Blood Page Interactions", () => {
     fireEvent.change(groupSelect, { target: { value: "O-" } });
 
     // Should display O- request
-    expect(screen.getByText("Apollo Hospital Jubilee Hills")).toBeInTheDocument();
+    expect(screen.getByText("Apollo Hospital, Jubilee Hills")).toBeInTheDocument();
   });
 
   it("displays empty state when no matching results exist", () => {

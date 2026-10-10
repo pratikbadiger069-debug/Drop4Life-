@@ -29,6 +29,9 @@ import {
   Loader2,
 } from "lucide-react";
 
+import { MedicalPrescreeningDialog } from "@/components/screening/medical-prescreening-dialog";
+import { medicalScreeningService } from "@/lib/screening/screening-service";
+
 interface MatchingRequestItem {
   request: BloodRequest;
   matchScore: number;
@@ -43,6 +46,8 @@ export default function DonorRequestsPage() {
   const [respondingId, setRespondingId] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [isScreeningOpen, setIsScreeningOpen] = useState<boolean>(false);
+  const [pendingAcceptRequestId, setPendingAcceptRequestId] = useState<string | null>(null);
 
   const loadDonorMatches = React.useCallback(async () => {
     if (!user?.id) return;
@@ -61,10 +66,7 @@ export default function DonorRequestsPage() {
     loadDonorMatches();
   }, [loadDonorMatches]);
 
-  const handleRespond = async (
-    requestId: string,
-    response: "ACCEPTED" | "DECLINED"
-  ) => {
+  const executeAccept = async (requestId: string) => {
     if (!user?.id) return;
     setRespondingId(requestId);
     setActionSuccess(null);
@@ -74,14 +76,54 @@ export default function DonorRequestsPage() {
       await matchingService.donorRespondToInvitation(
         requestId,
         user.id,
-        response,
-        response === "ACCEPTED" ? "Donor accepted via mobile portal." : "Donor unable to attend."
+        "ACCEPTED",
+        "Donor accepted via mobile portal with verified medical pre-screening."
       );
       setActionSuccess(
-        response === "ACCEPTED"
-          ? "Thank you! You have accepted this donation coordination request. Hospital clinical staff will reach out."
-          : "Response logged. Thank you for notifying the coordination team."
+        "Thank you! You have completed pre-screening and accepted this donation coordination request. Hospital clinical staff will reach out."
       );
+      await loadDonorMatches();
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setActionError(err.message);
+      } else {
+        setActionError("Failed to record response.");
+      }
+    } finally {
+      setRespondingId(null);
+    }
+  };
+
+  const handleRespond = async (
+    requestId: string,
+    response: "ACCEPTED" | "DECLINED"
+  ) => {
+    if (!user?.id) return;
+
+    if (response === "ACCEPTED") {
+      // Feature 2 Check: Prior to accepting an SOS request, verify that medical pre-screening has been completed
+      const existingScreening = medicalScreeningService.getLatestScreening(user.id);
+      if (!existingScreening) {
+        setPendingAcceptRequestId(requestId);
+        setIsScreeningOpen(true);
+        return;
+      }
+      await executeAccept(requestId);
+      return;
+    }
+
+    setRespondingId(requestId);
+    setActionSuccess(null);
+    setActionError(null);
+
+    try {
+      await matchingService.donorRespondToInvitation(
+        requestId,
+        user.id,
+        response,
+        "Donor unable to attend."
+      );
+      setActionSuccess("Response logged. Thank you for notifying the coordination team.");
       await loadDonorMatches();
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -347,8 +389,24 @@ export default function DonorRequestsPage() {
                     ))}
                   </div>
                 </div>
-              )}
-            </div>
+          {/* Feature 2: Medical Pre-Screening Dialog required before accepting SOS requests */}
+          {user && (
+            <MedicalPrescreeningDialog
+              isOpen={isScreeningOpen}
+              onClose={() => {
+                setIsScreeningOpen(false);
+                setPendingAcceptRequestId(null);
+              }}
+              donorId={user.id}
+              onSuccess={() => {
+                setIsScreeningOpen(false);
+                if (pendingAcceptRequestId) {
+                  const reqId = pendingAcceptRequestId;
+                  setPendingAcceptRequestId(null);
+                  executeAccept(reqId);
+                }
+              }}
+            />
           )}
         </div>
       </DashboardShell>

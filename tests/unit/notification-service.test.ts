@@ -59,8 +59,8 @@ describe("Notification Service & Preferences", () => {
     const sensitiveNotif = await notificationService.createNotification({
       userId: "usr-donor-001",
       role: "donor",
-      title: "Match found for Patient Johnathan Doe at Home Address Apt 4B",
-      message: "Direct blood for Patient Jane Smith living at 123 Main Private St.",
+      title: "Match found for Patient Arjun Singh at Home Address Apt 4B",
+      message: "Direct blood for Patient Sneha Nair living at 12 Plot Private Rd.",
       category: "DONOR_MATCH",
       priority: "HIGH",
     });
@@ -69,7 +69,7 @@ describe("Notification Service & Preferences", () => {
     if (sensitiveNotif) {
       expect(sensitiveNotif.title).toContain("[Protected Patient/Location]");
       expect(sensitiveNotif.message).toContain("[Protected Patient/Location]");
-      expect(sensitiveNotif.message).not.toContain("123 Main Private St");
+      expect(sensitiveNotif.message).not.toContain("12 Plot Private Rd");
     }
   });
 

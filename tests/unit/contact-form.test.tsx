@@ -22,8 +22,8 @@ describe("Contact Form Interaction", () => {
 
   it("successfully submits with valid fields", async () => {
     render(<ContactPage />);
-    fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: "John Doe" } });
-    fireEvent.change(screen.getByLabelText(/email address/i), { target: { value: "john@example.com" } });
+    fireEvent.change(screen.getByLabelText(/full name/i), { target: { value: "Aarav Sharma" } });
+    fireEvent.change(screen.getByLabelText(/email address/i), { target: { value: "aarav.sharma@example.com" } });
     fireEvent.change(screen.getByLabelText(/subject/i), { target: { value: "Blood donation query" } });
     fireEvent.change(screen.getByLabelText(/your message/i), { target: { value: "I would like to inquire about hosting a blood drive." } });
 

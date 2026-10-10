@@ -311,7 +311,7 @@ function RegisterContent() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     label="Full Legal Name"
-                    placeholder="Sarah Connor"
+                    placeholder="Rahul Kumar"
                     value={donorFullName}
                     onChange={(e) => setDonorFullName(e.target.value)}
                     error={formErrors.donorFullName}
@@ -321,7 +321,7 @@ function RegisterContent() {
                   <Input
                     label="Email Address"
                     type="email"
-                    placeholder="sarah@example.com"
+                    placeholder="rahul.kumar@example.com"
                     value={donorEmail}
                     onChange={(e) => setDonorEmail(e.target.value)}
                     error={formErrors.donorEmail}

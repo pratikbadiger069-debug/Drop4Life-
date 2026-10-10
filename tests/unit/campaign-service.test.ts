@@ -104,21 +104,21 @@ describe("NGO Campaign Service", () => {
 
   it("registers a participant and prevents duplicate registration", async () => {
     const participant = await campaignService.registerParticipant("camp-102", {
-      userName: "Taylor Smith",
-      userEmail: "taylor@example.org",
+      userName: "Mohammed Imran",
+      userEmail: "mohammed.imran@example.org",
       bloodGroup: "A+",
       participantRole: "donor",
       notes: "Morning 10 AM slot",
     });
 
     expect(participant.id).toBeDefined();
-    expect(participant.userName).toBe("Taylor Smith");
+    expect(participant.userName).toBe("Mohammed Imran");
 
     // Second registration attempt with the same email
     await expect(
       campaignService.registerParticipant("camp-102", {
-        userName: "Taylor Smith",
-        userEmail: "taylor@example.org",
+        userName: "Mohammed Imran",
+        userEmail: "mohammed.imran@example.org",
       })
     ).rejects.toThrow(/already registered/i);
   });

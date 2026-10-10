@@ -13,7 +13,7 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { useAuth } from "@/lib/auth/auth-context";
 import { APP_CONFIG } from "@/lib/constants";
-import { Eye, EyeOff, Lock, Heart, Activity, Building2 } from "lucide-react";
+import { Eye, EyeOff, Lock, Heart, Activity, Building2, Droplet, User } from "lucide-react";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
@@ -97,7 +97,7 @@ function LoginForm() {
               <span className="font-bold text-slate-900">Demo Accounts (Instant Testing):</span>
               <span className="text-[10px] text-muted-foreground">Click to Autofill</span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
               <button
                 type="button"
                 onClick={() => handleQuickDemo("donor@drop4life.org", "DonorPass123!")}
@@ -121,6 +121,22 @@ function LoginForm() {
               >
                 <Building2 className="w-3 h-3" />
                 <span>NGO</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickDemo("recipient@drop4life.org", "RecipientPass123!")}
+                className="p-1.5 rounded-lg border border-rose-200 bg-white hover:bg-rose-100 text-[11px] font-semibold text-rose-800 flex items-center justify-center gap-1 transition-colors"
+              >
+                <User className="w-3 h-3 text-rose-600" />
+                <span>Recipient</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickDemo("bloodbank@drop4life.org", "BloodBankPass123!")}
+                className="p-1.5 rounded-lg border border-red-300 bg-white hover:bg-red-100 text-[11px] font-semibold text-red-900 flex items-center justify-center gap-1 transition-colors"
+              >
+                <Droplet className="w-3 h-3 text-red-600 fill-current" />
+                <span>Blood Bank</span>
               </button>
               <button
                 type="button"

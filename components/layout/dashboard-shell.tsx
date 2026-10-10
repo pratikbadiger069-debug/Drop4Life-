@@ -19,6 +19,8 @@ import {
   Activity,
   Heart,
   Building2,
+  Users,
+  Droplets,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -40,33 +42,46 @@ export function DashboardShell({
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const roleConfig = {
+  const roleConfigs: Record<UserRole, { label: string; badgeVariant: "blush" | "destructive" | "warning" | "default"; icon: React.ComponentType<{ className?: string }>; color: string }> = {
     donor: {
       label: "Donor Portal",
-      badgeVariant: "blush" as const,
+      badgeVariant: "blush",
       icon: Heart,
       color: "text-red-700",
     },
     hospital: {
       label: "Hospital Portal",
-      badgeVariant: "destructive" as const,
+      badgeVariant: "destructive",
       icon: Activity,
       color: "text-red-800",
     },
     ngo: {
       label: "NGO Coordinator",
-      badgeVariant: "warning" as const,
+      badgeVariant: "warning",
       icon: Building2,
       color: "text-amber-800",
     },
     admin: {
       label: "System Admin",
-      badgeVariant: "default" as const,
+      badgeVariant: "default",
       icon: Shield,
       color: "text-slate-800",
     },
-  }[role];
+    recipient: {
+      label: "Recipient Portal",
+      badgeVariant: "blush",
+      icon: Users,
+      color: "text-rose-700",
+    },
+    bloodbank: {
+      label: "Blood Bank Officer",
+      badgeVariant: "destructive",
+      icon: Droplets,
+      color: "text-red-700",
+    },
+  };
 
+  const roleConfig = roleConfigs[role] || roleConfigs.donor;
   const RoleIcon = roleConfig.icon;
 
   return (

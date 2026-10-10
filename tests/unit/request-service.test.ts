@@ -43,7 +43,7 @@ describe("Request Service (Phase 7)", () => {
         priority: "NORMAL",
         requiredDate: "2026-10-15",
         department: "General",
-        city: "New York",
+        city: "Hyderabad",
       };
 
       await expect(requestService.createBloodRequest(input)).rejects.toThrow(
@@ -58,7 +58,7 @@ describe("Request Service (Phase 7)", () => {
         priority: "NORMAL",
         requiredDate: "2026-10-15",
         department: "General",
-        city: "New York",
+        city: "Hyderabad",
       };
 
       await expect(requestService.createBloodRequest(inputInvalidLow)).rejects.toThrow(
@@ -71,7 +71,7 @@ describe("Request Service (Phase 7)", () => {
         priority: "NORMAL",
         requiredDate: "2026-10-15",
         department: "General",
-        city: "New York",
+        city: "Hyderabad",
       };
 
       await expect(requestService.createBloodRequest(inputInvalidHigh)).rejects.toThrow(
@@ -89,7 +89,7 @@ describe("Request Service (Phase 7)", () => {
         priority: "NORMAL",
         requiredDate: "2026-10-15",
         department: "General",
-        city: "New York",
+        city: "Hyderabad",
       };
 
       await expect(requestService.createBloodRequest(input)).rejects.toThrow(
@@ -104,7 +104,7 @@ describe("Request Service (Phase 7)", () => {
         priority: "URGENT",
         requiredDate: "2026-11-01",
         department: "ICU",
-        city: "New York",
+        city: "Hyderabad",
       };
 
       await requestService.createBloodRequest(input);
@@ -124,7 +124,7 @@ describe("Request Service (Phase 7)", () => {
         priority: "NORMAL",
         requiredDate: "2026-10-20",
         department: "Surgery",
-        city: "New York",
+        city: "Hyderabad",
       });
 
       expect(req.status).toBe("SUBMITTED");
@@ -164,7 +164,7 @@ describe("Request Service (Phase 7)", () => {
         priority: "NORMAL",
         requiredDate: "2026-10-22",
         department: "General",
-        city: "New York",
+        city: "Hyderabad",
       });
 
       await requestService.updateRequestStatus(req.id, "FULFILLED");
@@ -181,7 +181,7 @@ describe("Request Service (Phase 7)", () => {
         priority: "NORMAL",
         requiredDate: "2026-10-25",
         department: "General",
-        city: "New York",
+        city: "Hyderabad",
       });
 
       const cancelled = await requestService.cancelBloodRequest(

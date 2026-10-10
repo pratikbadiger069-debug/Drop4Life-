@@ -66,13 +66,15 @@ export default function BloodBankDashboardPage() {
     if (!selectedItem) return;
     setUpdating(true);
     try {
-      await hospitalService.updateInventoryUnits(
-        bloodBankId,
-        selectedItem.bloodGroup,
-        Number(newAvailable),
-        "ROUTINE_AUDIT",
-        updateReason
-      );
+      await hospitalService.updateBloodInventory(bloodBankId, {
+        bloodGroup: selectedItem.bloodGroup,
+        availableUnits: Number(newAvailable),
+        reservedUnits: selectedItem.reservedUnits,
+        quarantinedUnits: selectedItem.quarantinedUnits,
+        expiredUnits: selectedItem.expiredUnits,
+        reason: "ROUTINE_AUDIT",
+        notes: updateReason || "Routine inventory level adjustment",
+      });
       setSelectedItem(null);
       await loadInventory();
     } catch (err) {
@@ -84,7 +86,7 @@ export default function BloodBankDashboardPage() {
 
   const totalAvailable = inventory.reduce((sum, item) => sum + item.availableUnits, 0);
   const lowStockGroups = inventory.filter(
-    (item) => item.status === "LOW_STOCK" || item.status === "CRITICAL_LOW"
+    (item) => item.stockStatus === "LOW_STOCK" || item.stockStatus === "CRITICAL_LOW"
   );
   const totalReserved = inventory.reduce((sum, item) => sum + item.reservedUnits, 0);
 
@@ -228,17 +230,17 @@ export default function BloodBankDashboardPage() {
                         <td className="p-4">
                           <Badge
                             variant={
-                              item.status === "CRITICAL_LOW"
+                              item.stockStatus === "CRITICAL_LOW"
                                 ? "destructive"
-                                : item.status === "LOW_STOCK"
+                                : item.stockStatus === "LOW_STOCK"
                                 ? "warning"
-                                : item.status === "SURPLUS"
+                                : item.stockStatus === "SURPLUS"
                                 ? "success"
                                 : "default"
                             }
                             className="text-[10px] py-0.5 px-2"
                           >
-                            {item.status.replace("_", " ")}
+                            {item.stockStatus.replace("_", " ")}
                           </Badge>
                         </td>
                         <td className="p-4 text-right">

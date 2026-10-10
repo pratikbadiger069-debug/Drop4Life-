@@ -150,9 +150,10 @@ export default function DonorDashboardPage() {
                 <PlusCircle className="w-3.5 h-3.5" />
                 <span>Log Donation</span>
               </Button>
-              <Link href="/find-blood">
-                <Button size="sm" variant="outline" className="font-bold text-xs">
-                  Urgent Requisitions
+              <Link href="/donor/requests">
+                <Button size="sm" variant="destructive" className="font-bold text-xs gap-1.5 shadow-xs">
+                  <ShieldAlert className="w-3.5 h-3.5" />
+                  <span>SOS Requisitions</span>
                 </Button>
               </Link>
             </div>

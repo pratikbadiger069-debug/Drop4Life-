@@ -104,6 +104,22 @@ export default function FindBloodPage() {
                 </Link>
                 .
               </p>
+
+              <div className="pt-2 flex flex-wrap items-center gap-3">
+                <Link href="/request-blood">
+                  <Button size="sm" variant="default" className="font-bold text-xs gap-1.5 shadow-xs">
+                    <Heart className="w-3.5 h-3.5 fill-current" />
+                    <span>Need Blood? Submit Request Form</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Button>
+                </Link>
+                <Link href="/blood-compatibility">
+                  <Button size="sm" variant="outline" className="font-semibold text-xs gap-1.5 bg-white">
+                    <Activity className="w-3.5 h-3.5 text-primary" />
+                    <span>Compatibility Checker</span>
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>

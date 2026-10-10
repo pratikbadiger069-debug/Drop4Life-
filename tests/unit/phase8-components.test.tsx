@@ -11,13 +11,13 @@ import { FacilityLocation, Campaign } from "@/lib/types";
 
 const MOCK_FACILITY: FacilityLocation = {
   id: "fac-test-1",
-  name: "General Health Hospital",
+  name: "NIMS Medical Center & Blood Bank",
   facilityType: "HOSPITAL",
-  address: "100 Medical Center Dr",
-  city: "New York",
-  latitude: 40.7128,
-  longitude: -74.006,
-  phone: "+1 (555) 123-4567",
+  address: "Road No. 1, Banjara Hills",
+  city: "Hyderabad",
+  latitude: 17.4265,
+  longitude: 78.4112,
+  phone: "+91 98765 00001",
   operatingHours: "24/7 Emergency",
   availableBloodGroups: ["O-", "A+"],
   distanceKm: 2.5,
@@ -30,8 +30,8 @@ const MOCK_CAMPAIGN: Campaign = {
   title: "Spring Blood Drive 2026",
   description: "Community blood drive",
   venueName: "Community Hall",
-  address: "100 Main St",
-  city: "New York",
+  address: "Auditorium Hall, Osmania Campus",
+  city: "Hyderabad",
   startDate: "2026-11-10",
   endDate: "2026-11-11",
   startTime: "09:00 AM",
@@ -39,7 +39,7 @@ const MOCK_CAMPAIGN: Campaign = {
   targetUnits: 100,
   collectedUnits: 20,
   registeredCount: 15,
-  contactPhone: "+1 (555) 456-7890",
+  contactPhone: "+91 98765 00002",
   contactEmail: "ngo@drop4life.org",
   status: "ACTIVE",
   isVerifiedOrg: true,
@@ -101,7 +101,7 @@ describe("Phase 8 UI Components", () => {
     );
 
     // Verify facility card in popup
-    expect(screen.getByText("General Health Hospital")).toBeInTheDocument();
+    expect(screen.getByText("NIMS Medical Center & Blood Bank")).toBeInTheDocument();
     expect(screen.getByText(/24\/7 Emergency/i)).toBeInTheDocument();
     expect(screen.getByText(/Directions/i)).toBeInTheDocument();
   });

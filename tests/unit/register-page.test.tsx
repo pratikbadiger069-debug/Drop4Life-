@@ -50,9 +50,9 @@ describe("Register Page Role Switcher & Forms", () => {
       </AuthProvider>
     );
 
-    fireEvent.change(screen.getByLabelText(/full legal name/i), { target: { value: "Jane Smith" } });
-    fireEvent.change(screen.getByLabelText(/email address/i), { target: { value: "jane@example.com" } });
-    fireEvent.change(screen.getByLabelText(/city \/ general region/i), { target: { value: "Chicago" } });
+    fireEvent.change(screen.getByLabelText(/full legal name/i), { target: { value: "Priya Reddy" } });
+    fireEvent.change(screen.getByLabelText(/email address/i), { target: { value: "priya.reddy@example.com" } });
+    fireEvent.change(screen.getByLabelText(/city \/ general region/i), { target: { value: "Hyderabad" } });
     fireEvent.change(screen.getByPlaceholderText("Min. 8 characters"), { target: { value: "Password123!" } });
     fireEvent.change(screen.getByLabelText(/confirm password/i), { target: { value: "DifferentPassword456!" } });
 

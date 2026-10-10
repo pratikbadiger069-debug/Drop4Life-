@@ -91,7 +91,7 @@ export default function HospitalDashboardPage() {
               <div className="flex items-center gap-2">
                 <Badge variant="destructive">Hospital Portal (Phase 6 Active)</Badge>
                 <span className="text-xs text-muted-foreground font-mono">
-                  {profile?.licenseNumber || "NY-MED-884210-A"}
+                  {profile?.licenseNumber || "TS-HYD-MED-884210-A"}
                 </span>
                 {profile?.isVerified && (
                   <Badge variant="success" className="text-[10px] gap-1 font-bold">
@@ -108,16 +108,29 @@ export default function HospitalDashboardPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Link href="/hospital/inventory">
-                <Button size="sm" variant="outline" className="font-semibold text-xs gap-1.5">
-                  <Layers className="w-3.5 h-3.5" />
-                  <span>Full Inventory</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <Link href="/request-blood">
+                <Button size="sm" variant="default" className="font-bold text-xs gap-1.5 shadow-xs">
+                  <PlusCircle className="w-3.5 h-3.5" />
+                  <span>Submit Blood Request</span>
                 </Button>
               </Link>
-              <Link href="/find-blood">
-                <Button size="sm" variant="default" className="font-bold text-xs">
-                  Public Radar
+              <Link href="/hospital/requests">
+                <Button size="sm" variant="outline" className="font-semibold text-xs gap-1.5 bg-white">
+                  <Send className="w-3.5 h-3.5 text-primary" />
+                  <span>Track Requests</span>
+                </Button>
+              </Link>
+              <Link href="/hospital/donors">
+                <Button size="sm" variant="outline" className="font-semibold text-xs gap-1.5 bg-white">
+                  <Activity className="w-3.5 h-3.5 text-slate-600" />
+                  <span>Match Donors</span>
+                </Button>
+              </Link>
+              <Link href="/hospital/inventory">
+                <Button size="sm" variant="outline" className="font-semibold text-xs gap-1.5 bg-white">
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Inventory</span>
                 </Button>
               </Link>
             </div>

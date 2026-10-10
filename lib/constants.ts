@@ -330,5 +330,5 @@ export function formatIndianPhoneNumber(phone: string): string {
   }
   return phone;
 }
-
-
+export const COMPATIBILITY_CLINICAL_DISCLAIMER =
+  "This tool provides general compatibility information only. Actual transfusion compatibility must be confirmed by qualified healthcare professionals through appropriate blood grouping, antibody screening, and crossmatching.";

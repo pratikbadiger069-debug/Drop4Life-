@@ -15,6 +15,7 @@ import {
   RequestStatus,
   RequestPriority,
   BloodGroup,
+  BloodComponent,
   RequestTimelineEvent,
   RequestDonorInvitation,
   DonorResponseStatus,
