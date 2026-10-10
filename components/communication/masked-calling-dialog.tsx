@@ -115,7 +115,7 @@ export function MaskedCallingDialog({
           {callingState === "idle" && (
             <div className="space-y-4 pt-2">
               <p className="text-xs text-slate-600 leading-relaxed max-w-xs mx-auto">
-                Your direct mobile number and the recipient's phone number are strictly protected. Both parties connect through a virtual proxy bridge.
+                Your direct mobile number and the recipient&apos;s phone number are strictly protected. Both parties connect through a virtual proxy bridge.
               </p>
 
               <div className="flex items-center justify-center gap-3 pt-2">

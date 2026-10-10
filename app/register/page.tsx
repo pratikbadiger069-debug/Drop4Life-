@@ -17,6 +17,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { useAuth } from "@/lib/auth/auth-context";
 import { ALL_BLOOD_GROUPS, APP_CONFIG } from "@/lib/constants";
 import { BloodGroup, UserRole } from "@/lib/types";
+import { otpVerificationService } from "@/lib/auth/otp-verification-service";
 import {
   Heart,
   Activity,
@@ -28,6 +29,10 @@ import {
   Eye,
   EyeOff,
   UserPlus,
+  Phone,
+  KeyRound,
+  RefreshCw,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -46,6 +51,17 @@ function RegisterContent() {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // OTP Verification Step State
+  const [registrationStep, setRegistrationStep] = useState<"form" | "otp" | "done">("form");
+  const [otpTarget, setOtpTarget] = useState<string>("");
+  const [otpCode, setOtpCode] = useState<string>("");
+  const [otpSending, setOtpSending] = useState<boolean>(false);
+  const [otpVerifying, setOtpVerifying] = useState<boolean>(false);
+  const [otpSent, setOtpSent] = useState<boolean>(false);
+  const [otpError, setOtpError] = useState<string | null>(null);
+  const [otpDemoCode, setOtpDemoCode] = useState<string | null>(null);
+  const [otpIsSimulated, setOtpIsSimulated] = useState<boolean>(true);
 
   // Donor Specific Fields
   const [donorFullName, setDonorFullName] = useState("");
@@ -126,6 +142,77 @@ function RegisterContent() {
     return Object.keys(errors).length === 0;
   };
 
+  // Determine the contact (phone or email) to send OTP to
+  const getOtpTarget = (): string => {
+    if (selectedRole === "donor") return donorPhone || donorEmail || "";
+    if (selectedRole === "hospital") return hospitalPhone || hospitalEmail || "";
+    return ngoPhone || ngoEmail || "";
+  };
+
+  const handleFormSubmitToOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    const target = getOtpTarget();
+    if (!target.trim()) {
+      setFormErrors({ ...formErrors, submit: "Please add a phone or email so we can verify your identity." });
+      return;
+    }
+
+    setOtpTarget(target);
+    setOtpSending(true);
+    setOtpError(null);
+    try {
+      const type = target.includes("@") ? "email" : "phone";
+      const result = await otpVerificationService.requestOtp(target, type);
+      setOtpSent(true);
+      setOtpIsSimulated(result.isSimulated);
+      if (result.demoCode) setOtpDemoCode(result.demoCode);
+      setRegistrationStep("otp");
+    } catch (err: any) {
+      setOtpError(err.message || "Could not send verification code. Please try again.");
+    } finally {
+      setOtpSending(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setOtpSending(true);
+    setOtpError(null);
+    try {
+      const type = otpTarget.includes("@") ? "email" : "phone";
+      const result = await otpVerificationService.requestOtp(otpTarget, type);
+      setOtpSent(true);
+      if (result.demoCode) setOtpDemoCode(result.demoCode);
+    } catch (err: any) {
+      setOtpError("Could not resend code. Please try again.");
+    } finally {
+      setOtpSending(false);
+    }
+  };
+
+  const handleVerifyOtpAndRegister = async () => {
+    if (!otpCode.trim()) {
+      setOtpError("Please enter the verification code.");
+      return;
+    }
+    setOtpVerifying(true);
+    setOtpError(null);
+    try {
+      const verifyResult = await otpVerificationService.verifyOtp(otpTarget, otpCode);
+      if (!verifyResult.success) {
+        setOtpError(verifyResult.error || "Invalid code. Please try again.");
+        setOtpVerifying(false);
+        return;
+      }
+      // OTP verified — now actually register
+      await performRegistration();
+    } catch (err: any) {
+      setOtpError(err.message || "Verification failed. Please try again.");
+      setOtpVerifying(false);
+    }
+  };
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
@@ -169,6 +256,52 @@ function RegisterContent() {
       }
     } catch (err: any) {
       setFormErrors({ submit: err.message || "Registration failed. Please try again." });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const performRegistration = async () => {
+    setIsSubmitting(true);
+    try {
+      if (selectedRole === "donor") {
+        await registerDonor({
+          fullName: donorFullName,
+          email: donorEmail,
+          password,
+          bloodGroup: donorBloodGroup,
+          city: donorCity,
+          phone: donorPhone,
+          isAvailable: donorIsAvailable,
+        });
+      } else if (selectedRole === "hospital") {
+        await registerHospital({
+          hospitalName,
+          licenseNumber: hospitalLicense,
+          department: hospitalDept,
+          contactPerson: hospitalContact,
+          workEmail: hospitalEmail,
+          password,
+          phone: hospitalPhone,
+          city: hospitalCity,
+          address: hospitalAddress,
+        });
+      } else if (selectedRole === "ngo") {
+        await registerNgo({
+          organizationName: ngoName,
+          registrationId: ngoRegId,
+          contactPerson: ngoContact,
+          email: ngoEmail,
+          password,
+          phone: ngoPhone,
+          city: ngoCity,
+          coverageArea: ngoCoverage,
+          description: ngoDescription,
+        });
+      }
+    } catch (err: any) {
+      setOtpError(err.message || "Registration failed. Please try again.");
+      setRegistrationStep("otp");
     } finally {
       setIsSubmitting(false);
     }
@@ -273,14 +406,111 @@ function RegisterContent() {
         </div>
       </div>
 
+      {/* STEP 3: OTP VERIFICATION */}
+      {registrationStep === "otp" && (
+        <Card className="border-slate-200 bg-white shadow-xl shadow-slate-200/50">
+          <CardHeader className="pb-4 border-b">
+            <div className="flex items-center justify-between">
+              <Badge variant="blush">OTP Identity Verification</Badge>
+              <span className="text-xs text-muted-foreground">Step 3 of 3</span>
+            </div>
+            <CardTitle className="text-lg mt-2 flex items-center gap-2">
+              <KeyRound className="w-5 h-5 text-primary" />
+              Verify Your Identity
+            </CardTitle>
+            <CardDescription className="text-xs">
+              A one-time verification code has been sent to <strong>{otpTarget}</strong>
+            </CardDescription>
+          </CardHeader>
+
+          <CardContent className="py-6 space-y-5">
+            {/* Demo mode notice */}
+            {otpIsSimulated && otpDemoCode && (
+              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 flex items-start gap-2">
+                <Phone className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="block font-bold mb-0.5">[DEMO MODE — No real SMS sent]</strong>
+                  Use test OTP: <code className="font-mono font-bold text-lg text-amber-900 bg-amber-100 px-1 rounded">{otpDemoCode}</code> to verify and complete registration.
+                </div>
+              </div>
+            )}
+
+            {otpError && (
+              <Alert variant="destructive">
+                <AlertTitle className="text-xs font-bold">Verification Failed</AlertTitle>
+                <AlertDescription className="text-xs">{otpError}</AlertDescription>
+              </Alert>
+            )}
+
+            <div className="space-y-2">
+              <label htmlFor="otp-code" className="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                Enter 6-Digit Verification Code <span className="text-destructive">*</span>
+              </label>
+              <input
+                id="otp-code"
+                type="text"
+                inputMode="numeric"
+                maxLength={6}
+                placeholder="e.g. 123456"
+                value={otpCode}
+                onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ""))}
+                className="flex h-12 w-full rounded-md border border-input bg-transparent px-3 py-1 text-xl font-mono font-bold tracking-widest text-center shadow-xs transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                autoComplete="one-time-code"
+              />
+              <p className="text-[11px] text-slate-400">Code expires in 10 minutes. Use <code className="font-mono">123456</code> in demo mode.</p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <Button
+                type="button"
+                size="lg"
+                className="flex-1 font-bold gap-2"
+                disabled={otpVerifying || isSubmitting}
+                onClick={handleVerifyOtpAndRegister}
+              >
+                {(otpVerifying || isSubmitting) ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /><span>Verifying & Registering...</span></>
+                ) : (
+                  <><CheckCircle2 className="w-4 h-4" /><span>Verify & Complete Registration</span></>
+                )}
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="lg"
+                className="gap-2 font-semibold"
+                disabled={otpSending}
+                onClick={handleResendOtp}
+              >
+                {otpSending ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /><span>Resending...</span></>
+                ) : (
+                  <><RefreshCw className="w-4 h-4" /><span>Resend Code</span></>
+                )}
+              </Button>
+            </div>
+
+            <button
+              type="button"
+              className="text-xs text-slate-500 hover:text-primary hover:underline mt-1"
+              onClick={() => { setRegistrationStep("form"); setOtpError(null); setOtpCode(""); }}
+            >
+              ← Back to registration form
+            </button>
+          </CardContent>
+        </Card>
+      )}
+
       {/* STEP 2: REGISTRATION FORM */}
+      {registrationStep === "form" && (
       <Card className="border-slate-200 bg-white shadow-xl shadow-slate-200/50">
         <CardHeader className="pb-4 border-b">
           <div className="flex items-center justify-between">
             <Badge variant={selectedRole === "donor" ? "blush" : selectedRole === "hospital" ? "destructive" : "warning"}>
               {selectedRole === "donor" ? "Donor Registration" : selectedRole === "hospital" ? "Hospital Registration" : "NGO Registration"}
             </Badge>
-            <span className="text-xs text-muted-foreground">Step 2 of 2</span>
+            <span className="text-xs text-muted-foreground">Step 2 of 3</span>
           </div>
           <CardTitle className="text-lg mt-2">
             {selectedRole === "donor" && "Enter Your Donor Profile"}
@@ -304,7 +534,7 @@ function RegisterContent() {
             </div>
           )}
 
-          <form onSubmit={handleRegister} className="space-y-4" noValidate>
+          <form onSubmit={handleFormSubmitToOtp} className="space-y-4" noValidate>
             {/* 1. DONOR FORM FIELDS */}
             {selectedRole === "donor" && (
               <>
@@ -618,11 +848,15 @@ function RegisterContent() {
                 type="submit"
                 size="lg"
                 className="w-full font-bold shadow-md gap-2"
-                isLoading={isSubmitting}
+                disabled={otpSending}
               >
-                <UserPlus className="w-4 h-4" />
-                <span>Complete Registration</span>
+                {otpSending ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /><span>Sending OTP...</span></>
+                ) : (
+                  <><Phone className="w-4 h-4" /><span>Continue — Verify via OTP</span></>
+                )}
               </Button>
+              <p className="text-[11px] text-center text-slate-400 mt-2">A 6-digit verification code will be sent to your registered phone or email.</p>
             </div>
           </form>
         </CardContent>
@@ -636,6 +870,7 @@ function RegisterContent() {
           </p>
         </CardFooter>
       </Card>
+      )}
     </div>
   );
 }
