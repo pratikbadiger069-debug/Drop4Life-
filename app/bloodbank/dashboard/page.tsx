@@ -53,8 +53,18 @@ export default function BloodBankDashboardPage() {
   };
 
   useEffect(() => {
-    loadInventory();
-  }, [user]);
+    const fetchInventory = async () => {
+      try {
+        const items = await hospitalService.getInventory(bloodBankId);
+        setInventory(items);
+      } catch (e) {
+        console.error("Failed to load blood bank inventory", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInventory();
+  }, [bloodBankId]);
 
   const handleOpenUpdate = (item: BloodInventoryItem) => {
     setSelectedItem(item);

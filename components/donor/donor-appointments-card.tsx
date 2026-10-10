@@ -53,7 +53,17 @@ export function DonorAppointmentsCard({ userId }: DonorAppointmentsCardProps) {
   };
 
   useEffect(() => {
-    loadAppointments();
+    const fetchAppointments = async () => {
+      try {
+        const res = await donorService.getAppointments(userId);
+        setAppointments(res);
+      } catch (e) {
+        console.error("Failed to load appointments", e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAppointments();
   }, [userId]);
 
   const handleBookSubmit = async (e: React.FormEvent) => {

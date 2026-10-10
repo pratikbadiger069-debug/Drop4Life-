@@ -382,7 +382,7 @@ export function MedicalPrescreeningDialog({
                   </label>
                 </div>
                 <p className="text-xs text-slate-500">
-                  List any prescription drugs, aspirin, or chronic therapy. Type "None" if healthy and unmedicated.
+                  List any prescription drugs, aspirin, or chronic therapy. Type &quot;None&quot; if healthy and unmedicated.
                 </p>
                 <Input
                   id="screen-meds"
